@@ -1,27 +1,27 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #131722;
-      --panel: #1e222d;
-      --panel2: #2a2e39;
-      --border: #2a2e39;
-      --border2: #363a45;
-      --text: #b2b5be;
-      --text-strong: #d1d4dc;
-      --text-price: #e0e3eb;
-      --muted: #787b86;
-      --muted2: #4c525e;
-      --green: #26a69a;
-      --green-bright: #26a69a;
-      --red: #ef5350;
-      --red-bright: #ef5350;
-      --gold: #f7a600;
-      --gold-bg: rgba(247,166,0,0.10);
-      --blue: #2962ff;
-      --accent: #2962ff;
-      --hover: rgba(255,255,255,0.04);
-      --pro-gold: #f7a600;
-      --chart-bg: #131722;
+      --bg: #fcfbf8;
+      --panel: #ffffff;
+      --panel2: #f5eccf;
+      --border: rgba(212, 175, 55, 0.35);
+      --border2: #d4af37;
+      --text: #4b5563;
+      --text-strong: #111827;
+      --text-price: #8c6d17;
+      --muted: #6b7280;
+      --muted2: #9ca3af;
+      --green: #16a34a;
+      --green-bright: #16a34a;
+      --red: #dc2626;
+      --red-bright: #dc2626;
+      --gold: #c59b27;
+      --gold-bg: rgba(212,175,55,0.12);
+      --blue: #2563eb;
+      --accent: #c59b27;
+      --hover: rgba(212,175,55,0.08);
+      --pro-gold: #c59b27;
+      --chart-bg: #ffffff;
     }
 
     /* ── LIGHT THEME ── */
