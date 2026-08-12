@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MarketPulse FinTech Terminal — Zerodha Official Suite (100+ Live Stocks)</title>
-    <meta name="description" content="Institutional fintech automation & portfolio suite combining Zerodha Kite/Coin UI with Ramp spend AI, Alpaca execution, Grasshopper banking, and FINBOURNE audit trails. Built by Tanmay Mishra.">
+    <title>MarketPulse FinTech Terminal — Institutional Portfolio Suite</title>
+    <meta name="description" content="Institutional fintech automation & portfolio suite combining MarketPulse AI Intelligence with Ramp spend AI, Alpaca execution, Grasshopper banking, and FINBOURNE audit trails. Built by Tanmay Mishra.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -143,11 +143,11 @@
     <header class="kite-header">
         <div class="header-left">
             <a href="index.html" class="logo">
-                📈 MarketPulse <span class="logo-tag">Kite 100+ Live Suite</span>
+                📈 MarketPulse <span class="logo-tag">100+ Live Terminal</span>
             </a>
             <div class="header-tabs">
-                <button class="tab-btn active" onclick="switchTab('kite')">📈 Kite Trading (Alpaca / NSE)</button>
-                <button class="tab-btn" onclick="switchTab('coin')">🪙 Coin Wealth (Zerodha)</button>
+                <button class="tab-btn active" onclick="switchTab('kite')">📈 MarketPulse Trading (Alpaca / NSE)</button>
+                <button class="tab-btn" onclick="switchTab('coin')">🪙 Portfolio Wealth Engine</button>
                 <button class="tab-btn" onclick="switchTab('ramp')">💳 Ramp Automation</button>
                 <button class="tab-btn" onclick="switchTab('grasshopper')">🏦 Grasshopper Bank</button>
                 <button class="tab-btn" onclick="switchTab('finbourne')">🏛️ FINBOURNE Audit</button>
@@ -185,11 +185,11 @@
         <main class="workspace">
             <div class="ai-prompt-bar">
                 <span style="font-size:1.2rem;">⚡</span>
-                <input type="text" id="aiQuery" placeholder="Ask FreeLLMAPI AI: 'Best high-growth stock out of top 100?', 'Sharpe ratio for RELIANCE vs ZOMATO'..." onkeydown="if(event.key==='Enter')runAIQuery()">
-                <button class="btn-action btn-zerodha" onclick="runAIQuery()">Ask Zerodha AI</button>
+                <input type="text" id="aiQuery" placeholder="Ask MarketPulse AI: 'Best high-growth stock out of top 100?', 'Sharpe ratio for RELIANCE vs ZOMATO'..." onkeydown="if(event.key==='Enter')runAIQuery()">
+                <button class="btn-action btn-zerodha" onclick="runAIQuery()">Ask MarketPulse AI</button>
             </div>
 
-            <!-- MODULE 1: ZERODHA KITE + ALPACA -->
+            <!-- MODULE 1: MARKETPULSE TRADING + ALPACA -->
             <div id="module-kite" class="module-panel active">
                 <div class="card-row">
                     <div class="stat-card">
@@ -212,7 +212,7 @@
                 <div class="panel-box">
                     <div class="panel-header">
                         <div class="panel-title">
-                            📈 Order Execution & Market Depth (Alpaca + Zerodha Kite API)
+                            📈 Order Execution & Market Depth (Alpaca + MarketPulse API)
                         </div>
                         <div>
                             <button class="btn-action btn-buy" onclick="placeOrder('BUY')">B BUY (Market)</button>
@@ -252,7 +252,7 @@
                 </div>
             </div>
 
-            <!-- MODULE 2: ZERODHA COIN -->
+            <!-- MODULE 2: PORTFOLIO WEALTH -->
             <div id="module-coin" class="module-panel">
                 <div class="card-row">
                     <div class="stat-card">
@@ -514,7 +514,6 @@
             document.getElementById('liveStatus').textContent = 'FETCHING LIVE...';
             document.getElementById('liveStatus').style.color = '#387ed1';
 
-            // Attempt Live Real Yahoo Finance Quote Fetch via AllOrigins Proxy
             try {
                 const yahooSym = sym.includes(' ') ? '^NSEI' : (sym.match(/^[A-Z0-9]+$/) ? `${sym}.NS` : sym);
                 const url = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${yahooSym}?interval=1d&range=1d`)}`;
@@ -536,7 +535,6 @@
                     document.getElementById('liveStatus').textContent = 'LIVE YAHOO API';
                     document.getElementById('liveStatus').style.color = '#25a750';
 
-                    // Update depth table prices dynamically
                     document.getElementById('bidPrice1').textContent = `${(price - 0.5).toFixed(2)}`;
                     document.getElementById('askPrice1').textContent = `${(price + 0.5).toFixed(2)}`;
                 }
@@ -568,7 +566,7 @@
                 </div>
                 <div style="font-size:0.92rem; color:var(--text-main); line-height:1.6;">
                     • <b>Action:</b> ${type} 100 Shares of <b>${sym}</b><br>
-                    • <b>Routing:</b> Direct Market Access (Alpaca + Zerodha Kite API)<br>
+                    • <b>Routing:</b> Direct Market Access (Alpaca + MarketPulse API)<br>
                     • <b>Timestamp:</b> ${now}<br>
                     • <b>FINBOURNE Hash:</b> <span style="font-family:var(--mono);">${hash}</span> (Cryptographically Sealed)
                 </div>
@@ -603,7 +601,7 @@
 
             aiContainer.innerHTML = `
                 <div class="panel-header">
-                    <div class="panel-title">⚡ Zerodha FreeLLMAPI AI Engine — Query: "${q}"</div>
+                    <div class="panel-title">⚡ MarketPulse FreeLLMAPI AI Engine — Query: "${q}"</div>
                     <span class="tag-kite" style="background:#eaf2fb; color:#387ed1;">LIVE REASONING</span>
                 </div>
                 <div style="font-size:0.92rem; color:var(--text-main); line-height:1.6;" id="aiOutputText">
@@ -618,7 +616,7 @@
                     body: JSON.stringify({
                         model: 'meta-llama/Llama-3.3-70B-Instruct',
                         messages: [
-                            { role: 'system', content: 'You are Zerodha MarketPulse AI. Provide sharp, professional financial market analysis for Indian (NSE/BSE 100) and global markets.' },
+                            { role: 'system', content: 'You are MarketPulse Financial Intelligence AI. Provide sharp, professional financial market analysis for Indian (NSE/BSE 100) and global markets.' },
                             { role: 'user', content: q }
                         ]
                     })
@@ -639,7 +637,7 @@
             } catch (err) {
                 document.getElementById('aiOutputText').innerHTML = `
                     <div style="font-size:0.95rem; font-weight:700; color:var(--zerodha-blue); margin-bottom:0.5rem;">
-                        📊 MarketPulse Institutional AI Analysis for "${q}":
+                        📊 MarketPulse Intelligence AI Analysis for "${q}":
                     </div>
                     • <b>Top High-Growth Leaders (out of 100+ NIFTY Leaders):</b><br>
                     &nbsp;&nbsp;1. <code>ZOMATO</code> (₹265.40, +4.80%) — Strong Q3 earnings surge & quick commerce expansion.<br>
@@ -649,7 +647,7 @@
                     • <b>DII / FII Net Inflow:</b> DII Net Inflow +₹4,850 Cr | Heavy buying in Defense (HAL, BEL) & Tech.<br>
                     • <b>Options PCR Floor:</b> 1.28 (Strong put support on NIFTY at 24,100).<br><br>
                     <div style="font-size:0.75rem; color:var(--text-muted); font-family:var(--mono);">
-                        ✅ Executed across 100+ Stock Dataset · FINBOURNE Cryptographic Signature: 0x9f1a8c32... (Sealed)
+                        ✅ Executed via MarketPulse Intelligence Engine · FINBOURNE Cryptographic Signature: 0x9f1a8c32... (Sealed)
                     </div>
                 `;
             }

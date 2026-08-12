@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MarketPulse MCP — 6-Agent AI Stock & Index Debate (100+ Live Stocks)</title>
+    <title>MarketPulse MCP — 6-Agent AI Stock & Index Debate (MarketPulse AI Engine)</title>
     <meta name="description" content="Institutional 6-agent AI debate terminal for 100+ Indian stocks & indices powered by FreeLLMAPI. Built by Tanmay Mishra.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -115,7 +115,7 @@
             📈 MarketPulse <span class="tag-kite">100+ Live AI Debate</span>
         </a>
         <div class="header-nav">
-            <a href="terminal.html">📈 FinTech Master Terminal</a>
+            <a href="terminal.html">📈 MarketPulse Terminal</a>
             <a href="https://tanmaymish.github.io/FraudSense-AI/" target="_blank">🛡️ FraudSense AI ↗</a>
             <a href="https://github.com/tanmaymish/MarketPulse-MCP" target="_blank" class="btn-cta">GitHub Repo ↗</a>
         </div>
@@ -147,7 +147,7 @@
             </div>
 
             <button class="btn-run" onclick="runDebate()">
-                ⚡ Start 6-Agent AI Debate
+                ⚡ Start 6-Agent MarketPulse Debate
             </button>
 
             <div class="field-group">
@@ -187,7 +187,7 @@
                     <span class="stock-symbol" id="targetSym">RELIANCE</span>
                     <span class="stock-price" id="targetPrice">₹2,980.50 (+1.40%)</span>
                 </div>
-                <span class="tag-kite" id="liveFetchTag">Zerodha Kite / FreeLLMAPI Live</span>
+                <span class="tag-kite" id="liveFetchTag">MarketPulse Intelligence / FreeLLMAPI Live</span>
             </div>
 
             <div class="chat-feed" id="chatFeed">
@@ -308,7 +308,6 @@
             document.getElementById('targetSym').textContent = sym;
             document.getElementById('targetPrice').textContent = `${price} (${chg})`;
 
-            // Live Yahoo Finance API fetch
             try {
                 const yahooSym = sym === 'NIFTY50' ? '^NSEI' : (sym === 'BANKNIFTY' ? '^NSEBANK' : (sym === 'SENSEX' ? '^BSESN' : `${sym}.NS`));
                 const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${yahooSym}?interval=1d&range=1d`)}`);
