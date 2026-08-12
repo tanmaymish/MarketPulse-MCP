@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketPulse FinTech Terminal — Powered by Zerodha, Ramp, Grasshopper & FINBOURNE</title>
+    <meta name="description" content="Institutional fintech automation & portfolio suite combining Zerodha Kite/Coin UI with Ramp spend AI, Alpaca execution, Grasshopper banking, and FINBOURNE audit trails. Built by Tanmay Mishra.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg-body: #0d1117;
+            --bg-panel: #161b22;
+            --bg-card: #21262d;
+            --bg-hover: #2e3541;
+            --border: #30363d;
+            --text-main: #f0f6fc;
+            --text-muted: #8b949e;
+            --text-dim: #484f58;
+            --kite-orange: #ff5722;
+            --kite-blue: #388e3c;
+            --green: #2ea043;
+            --red: #da3633;
+            --blue: #58a6ff;
+            --purple: #bc8cff;
+            --amber: #d29922;
+            --mono: 'JetBrains Mono', monospace;
+            --sans: 'Inter', sans-serif;
+        }
+
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--sans); background: var(--bg-body); color: var(--text-main);
+            line-height: 1.5; overflow-x: hidden; height: 100vh; display: flex; flex-direction: column;
+        }
+
+        /* TOP KITE NAVBAR */
+        .kite-header {
+            background: #161b22; border-bottom: 1px solid var(--border);
+            padding: 0 1.5rem; height: 50px; display: flex; align-items: center; justify-content: space-between;
+            flex-shrink: 0;
+        }
+        .header-left { display: flex; align-items: center; gap: 1.5rem; }
+        .logo { display: flex; align-items: center; gap: 0.5rem; font-weight: 800; font-size: 1.1rem; color: #fff; text-decoration: none; }
+        .logo-tag { font-size: 0.7rem; background: var(--kite-orange); color: #fff; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 700; }
+        
+        .header-tabs { display: flex; height: 50px; }
+        .tab-btn {
+            height: 100%; padding: 0 1.2rem; display: flex; align-items: center; gap: 0.5rem;
+            color: var(--text-muted); font-size: 0.85rem; font-weight: 600; cursor: pointer;
+            border-bottom: 2px solid transparent; transition: all 0.2s; background: transparent; border-top: none; border-left: none; border-right: none;
+        }
+        .tab-btn:hover { color: var(--text-main); background: rgba(255,255,255,0.03); }
+        .tab-btn.active { color: var(--kite-orange); border-bottom-color: var(--kite-orange); background: rgba(255,87,34,0.05); }
+
+        .header-right { display: flex; align-items: center; gap: 1rem; font-size: 0.85rem; }
+        .user-profile { display: flex; align-items: center; gap: 0.5rem; color: var(--text-main); font-weight: 600; }
+        .avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--kite-orange); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.75rem; }
+
+        /* LAYOUT MAIN CONTAINER */
+        .app-body { display: flex; flex: 1; overflow: hidden; }
+
+        /* LEFT SIDEBAR (WATCHLIST) */
+        .sidebar {
+            width: 320px; background: var(--bg-panel); border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; flex-shrink: 0;
+        }
+        .search-box { padding: 0.75rem; border-bottom: 1px solid var(--border); }
+        .search-box input {
+            width: 100%; background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 6px; padding: 0.5rem 0.8rem; color: #fff; font-family: var(--mono); font-size: 0.85rem; outline: none;
+        }
+        .search-box input:focus { border-color: var(--kite-orange); }
+
+        .watchlist { flex: 1; overflow-y: auto; }
+        .watch-item {
+            padding: 0.8rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.03);
+            display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.15s;
+        }
+        .watch-item:hover { background: var(--bg-card); }
+        .watch-item.selected { background: rgba(255,87,34,0.1); border-left: 3px solid var(--kite-orange); }
+        .sym-name { font-weight: 700; font-size: 0.88rem; font-family: var(--mono); }
+        .sym-exch { font-size: 0.7rem; color: var(--text-muted); }
+        .sym-price { font-family: var(--mono); font-size: 0.88rem; font-weight: 600; text-align: right; }
+        .sym-chg { font-size: 0.75rem; font-family: var(--mono); }
+        .up { color: var(--green); } .down { color: var(--red); }
+
+        /* MAIN CONTENT WORKSPACE */
+        .workspace { flex: 1; background: var(--bg-body); overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+
+        /* MODULE PANELS */
+        .module-panel { display: none; flex-direction: column; gap: 1.5rem; }
+        .module-panel.active { display: flex; }
+
+        /* GRID CARDS */
+        .card-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+        .stat-card {
+            background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px;
+            padding: 1.25rem; display: flex; flex-direction: column; gap: 0.4rem;
+        }
+        .stat-title { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; }
+        .stat-val { font-size: 1.8rem; font-weight: 800; font-family: var(--mono); }
+        .stat-sub { font-size: 0.75rem; color: var(--text-muted); }
+
+        .panel-box {
+            background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem;
+        }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
+        .panel-title { font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .panel-tag { font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 700; }
+
+        /* TABLES */
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th { text-align: left; padding: 0.75rem 1rem; color: var(--text-muted); border-bottom: 1px solid var(--border); font-size: 0.75rem; text-transform: uppercase; }
+        td { padding: 0.85rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.04); font-family: var(--mono); }
+        tr:hover td { background: rgba(255,255,255,0.02); }
+
+        /* BUTTONS */
+        .btn-action {
+            padding: 0.5rem 1rem; border-radius: 6px; font-weight: 700; font-size: 0.8rem; border: none; cursor: pointer; transition: opacity 0.2s;
+        }
+        .btn-buy { background: #388e3c; color: #fff; }
+        .btn-sell { background: #d32f2f; color: #fff; }
+        .btn-orange { background: var(--kite-orange); color: #fff; }
+
+        /* PLAIN ENGLISH AI QUERY BAR */
+        .ai-prompt-bar {
+            background: var(--bg-panel); border: 1px solid var(--border); border-radius: 10px; padding: 1rem;
+            display: flex; gap: 0.75rem; align-items: center;
+        }
+        .ai-prompt-bar input {
+            flex: 1; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px;
+            padding: 0.75rem 1rem; color: #fff; font-size: 0.9rem; outline: none;
+        }
+        .ai-prompt-bar input:focus { border-color: var(--blue); }
+
+        /* AUDIT LOG PIPELINE */
+        .audit-log { font-family: var(--mono); font-size: 0.8rem; display: flex; flex-direction: column; gap: 0.6rem; }
+        .log-entry { padding: 0.6rem 0.8rem; background: var(--bg-card); border-left: 3px solid var(--blue); border-radius: 4px; display: flex; justify-content: space-between; }
+    </style>
+</head>
+<body>
+    <!-- ZERODHA KITE TOP HEADER -->
+    <header class="kite-header">
+        <div class="header-left">
+            <a href="index.html" class="logo">
+                📈 MarketPulse <span class="logo-tag">FinTech Suite</span>
+            </a>
+            <div class="header-tabs">
+                <button class="tab-btn active" onclick="switchTab('kite')">📈 Kite Trading (Alpaca)</button>
+                <button class="tab-btn" onclick="switchTab('coin')">🪙 Coin Wealth (Zerodha)</button>
+                <button class="tab-btn" onclick="switchTab('ramp')">💳 Ramp Automation</button>
+                <button class="tab-btn" onclick="switchTab('grasshopper')">🏦 Grasshopper Bank</button>
+                <button class="tab-btn" onclick="switchTab('finbourne')">🏛️ FINBOURNE Audit</button>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="user-profile">
+                <div class="avatar">TM</div>
+                <span>Tanmay Mishra</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="app-body">
+        <!-- LEFT SIDEBAR WATCHLIST (KITE STYLE) -->
+        <aside class="sidebar">
+            <div class="search-box">
+                <input type="text" placeholder="Search eg: RELIANCE, INFOSYS, TSLA, BTC...">
+            </div>
+            <div class="watchlist">
+                <div class="watch-item selected" onclick="selectStock('RELIANCE', '₹2,980.50', '+1.40%')">
+                    <div>
+                        <div class="sym-name">RELIANCE</div>
+                        <div class="sym-exch">NSE • EQUITY</div>
+                    </div>
+                    <div>
+                        <div class="sym-price">2,980.50</div>
+                        <div class="sym-chg up">+1.40%</div>
+                    </div>
+                </div>
+                <div class="watch-item" onclick="selectStock('TCS', '₹4,210.00', '-0.35%')">
+                    <div>
+                        <div class="sym-name">TCS</div>
+                        <div class="sym-exch">NSE • EQUITY</div>
+                    </div>
+                    <div>
+                        <div class="sym-price">4,210.00</div>
+                        <div class="sym-chg down">-0.35%</div>
+                    </div>
+                </div>
+                <div class="watch-item" onclick="selectStock('HDFCBANK', '₹1,645.20', '+0.95%')">
+                    <div>
+                        <div class="sym-name">HDFCBANK</div>
+                        <div class="sym-exch">NSE • EQUITY</div>
+                    </div>
+                    <div>
+                        <div class="sym-price">1,645.20</div>
+                        <div class="sym-chg up">+0.95%</div>
+                    </div>
+                </div>
+                <div class="watch-item" onclick="selectStock('TSLA', '$248.50', '+3.20%')">
+                    <div>
+                        <div class="sym-name">TSLA</div>
+                        <div class="sym-exch">NASDAQ • ALPACA</div>
+                    </div>
+                    <div>
+                        <div class="sym-price">248.50</div>
+                        <div class="sym-chg up">+3.20%</div>
+                    </div>
+                </div>
+                <div class="watch-item" onclick="selectStock('AAPL', '$224.30', '+0.45%')">
+                    <div>
+                        <div class="sym-name">AAPL</div>
+                        <div class="sym-exch">NASDAQ • ALPACA</div>
+                    </div>
+                    <div>
+                        <div class="sym-price">224.30</div>
+                        <div class="sym-chg up">+0.45%</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN WORKSPACE CONTAINER -->
+        <main class="workspace">
+            
+            <!-- PLAIN ENGLISH AI QUERY BAR (Zerodha Plain English Portfolio Querying) -->
+            <div class="ai-prompt-bar">
+                <span style="font-size:1.2rem;">🤖</span>
+                <input type="text" id="aiQuery" placeholder="Ask AI in plain English: 'What is my portfolio Sharpe ratio?', 'Match pending Ramp invoices', or 'Run Alpaca algo buy order'..." onkeydown="if(event.key==='Enter')runAIQuery()">
+                <button class="btn-action btn-orange" onclick="runAIQuery()">⚡ Ask MCP Agent</button>
+            </div>
+
+            <!-- MODULE 1: ZERODHA KITE + ALPACA TRADING CONSOLE -->
+            <div id="module-kite" class="module-panel active">
+                <div class="card-row">
+                    <div class="stat-card">
+                        <div class="stat-title">Selected Instrument</div>
+                        <div class="stat-val" id="kiteSym">RELIANCE</div>
+                        <div class="stat-sub" id="kitePrice">₹2,980.50 (+1.40%)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Alpaca Order Routing</div>
+                        <div class="stat-val" style="color:var(--green);">CONNECTED</div>
+                        <div class="stat-sub">Direct Execution Engine</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Option PCR Ratio</div>
+                        <div class="stat-val" style="color:var(--blue);">1.28</div>
+                        <div class="stat-sub">Bullish Accumulation Zone</div>
+                    </div>
+                </div>
+
+                <div class="panel-box">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            📈 Order Execution & Market Depth (Alpaca + Kite API)
+                        </div>
+                        <div>
+                            <button class="btn-action btn-buy" onclick="placeOrder('BUY')">B BUY (Market)</button>
+                            <button class="btn-action btn-sell" onclick="placeOrder('SELL')">S SELL (Market)</button>
+                        </div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Bid Qty</th>
+                                <th>Bid Price</th>
+                                <th>Ask Price</th>
+                                <th>Ask Qty</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="up">1,450</td>
+                                <td class="up">2,980.50</td>
+                                <td class="down">2,980.85</td>
+                                <td class="down">820</td>
+                            </tr>
+                            <tr>
+                                <td class="up">3,120</td>
+                                <td class="up">2,980.00</td>
+                                <td class="down">2,981.00</td>
+                                <td class="down">1,940</td>
+                            </tr>
+                            <tr>
+                                <td class="up">5,800</td>
+                                <td class="up">2,979.50</td>
+                                <td class="down">2,981.50</td>
+                                <td class="down">4,110</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MODULE 2: ZERODHA COIN + FINBOURNE ASSET MANAGEMENT -->
+            <div id="module-coin" class="module-panel">
+                <div class="card-row">
+                    <div class="stat-card">
+                        <div class="stat-title">Total Invested Value</div>
+                        <div class="stat-val">₹24.85 L</div>
+                        <div class="stat-sub">Current Value: ₹31.40 L (+26.3%)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Portfolio Sharpe Ratio</div>
+                        <div class="stat-val" style="color:var(--green);">2.14</div>
+                        <div class="stat-sub">Risk-Adjusted Return: Excellent</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Diversification Score</div>
+                        <div class="stat-val" style="color:var(--amber);">88 / 100</div>
+                        <div class="stat-sub">Max Sector Concentration: 28% Tech</div>
+                    </div>
+                </div>
+
+                <div class="panel-box">
+                    <div class="panel-header">
+                        <div class="panel-title">🪙 Holdings & Mutual Fund Overlap (Coin Engine)</div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Instrument</th>
+                                <th>Qty</th>
+                                <th>Avg Price</th>
+                                <th>LTP</th>
+                                <th>P&L</th>
+                                <th>Sharpe Ratio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>RELIANCE</strong></td>
+                                <td>150</td>
+                                <td>2,420.00</td>
+                                <td>2,980.50</td>
+                                <td class="up">+₹84,075 (+23.1%)</td>
+                                <td>2.45</td>
+                            </tr>
+                            <tr>
+                                <td><strong>TCS</strong></td>
+                                <td>80</td>
+                                <td>3,850.00</td>
+                                <td>4,210.00</td>
+                                <td class="up">+₹28,800 (+9.3%)</td>
+                                <td>1.92</td>
+                            </tr>
+                            <tr>
+                                <td><strong>HDFC Flexi Cap Fund</strong></td>
+                                <td>4,200 units</td>
+                                <td>185.20</td>
+                                <td>242.10</td>
+                                <td class="up">+₹2,38,980 (+30.7%)</td>
+                                <td>2.10</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MODULE 3: RAMP ENTERPRISE SPEND & INVOICE MATCHING -->
+            <div id="module-ramp" class="module-panel">
+                <div class="card-row">
+                    <div class="stat-card">
+                        <div class="stat-title">Monthly Enterprise Spend</div>
+                        <div class="stat-val">$148,250</div>
+                        <div class="stat-sub">Budget Limit: $180,000</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">AI Invoice Matching</div>
+                        <div class="stat-val" style="color:var(--green);">99.4%</div>
+                        <div class="stat-sub">Zero Duplicate Payments</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Vendor Card Controls</div>
+                        <div class="stat-val" style="color:var(--purple);">42 Active</div>
+                        <div class="stat-sub">Automated Receipt Capture</div>
+                    </div>
+                </div>
+
+                <div class="panel-box">
+                    <div class="panel-header">
+                        <div class="panel-title">💳 Ramp Spend Breakdown & AI Invoice Queue</div>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Vendor</th>
+                                <th>Category</th>
+                                <th>Invoice Amount</th>
+                                <th>OCR Match</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>AWS Cloud Infrastructure</strong></td>
+                                <td>SaaS / Cloud</td>
+                                <td>$42,150.00</td>
+                                <td class="up">100% Match</td>
+                                <td><span style="background:rgba(46,160,67,0.15);color:var(--green);padding:0.2rem 0.5rem;border-radius:4px;">AUTO-PAID</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Snowflake Data Warehouse</strong></td>
+                                <td>Data / Analytics</td>
+                                <td>$18,400.00</td>
+                                <td class="up">100% Match</td>
+                                <td><span style="background:rgba(46,160,67,0.15);color:var(--green);padding:0.2rem 0.5rem;border-radius:4px;">AUTO-PAID</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Datadog Monitoring</strong></td>
+                                <td>DevOps</td>
+                                <td>$6,250.00</td>
+                                <td class="up">98% Match</td>
+                                <td><span style="background:rgba(210,153,34,0.15);color:var(--amber);padding:0.2rem 0.5rem;border-radius:4px;">PENDING APPROVAL</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MODULE 4: GRASSHOPPER BANK NEO-BANKING -->
+            <div id="module-grasshopper" class="module-panel">
+                <div class="card-row">
+                    <div class="stat-card">
+                        <div class="stat-title">Live Bank Balance</div>
+                        <div class="stat-val">$1,840,500</div>
+                        <div class="stat-sub">Grasshopper Operating Account</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Cash Runway</div>
+                        <div class="stat-val" style="color:var(--green);">24.2 Months</div>
+                        <div class="stat-sub">Net Monthly Burn: $76,000</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Real-Time Yield</div>
+                        <div class="stat-val" style="color:var(--blue);">5.25% APY</div>
+                        <div class="stat-sub">Treasury Cash Sweeps</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODULE 5: FINBOURNE INSTITUTIONAL AUDIT TRAIL -->
+            <div id="module-finbourne" class="module-panel">
+                <div class="panel-box">
+                    <div class="panel-header">
+                        <div class="panel-title">🏛️ FINBOURNE Cryptographic Audit Log</div>
+                    </div>
+                    <div class="audit-log" id="auditLog">
+                        <div class="log-entry">
+                            <span>[2026-08-12 21:45:02] MCP_TOOL: `get_portfolio_sharpe_ratio` executed</span>
+                            <span class="up">HASH: 0x8f2a...c914 (VERIFIED)</span>
+                        </div>
+                        <div class="log-entry">
+                            <span>[2026-08-12 21:44:18] MCP_TOOL: `ramp_match_invoices` executed</span>
+                            <span class="up">HASH: 0x3d9e...110b (VERIFIED)</span>
+                        </div>
+                        <div class="log-entry">
+                            <span>[2026-08-12 21:43:00] MCP_TOOL: `alpaca_route_order` executed for RELIANCE</span>
+                            <span class="up">HASH: 0x7c41...ee89 (VERIFIED)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        function switchTab(name) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.module-panel').forEach(p => p.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(`module-${name}`).classList.add('active');
+        }
+
+        function selectStock(sym, price, chg) {
+            document.querySelectorAll('.watch-item').forEach(i => i.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+
+            document.getElementById('kiteSym').textContent = sym;
+            document.getElementById('kitePrice').textContent = `${price} (${chg})`;
+        }
+
+        function placeOrder(type) {
+            const sym = document.getElementById('kiteSym').textContent;
+            alert(`⚡ Alpaca + Kite Order Executed: ${type} ${sym} at Market Price! Logged to FINBOURNE audit trail.`);
+            
+            // Add log entry
+            const log = document.getElementById('auditLog');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            const now = new Date().toISOString().replace('T', ' ').substring(0, 19);
+            entry.innerHTML = `<span>[${now}] MCP_TOOL: \`alpaca_route_order\` executed (${type} ${sym})</span><span class="up">HASH: 0x${Math.random().toString(16).substring(2, 10)} (VERIFIED)</span>`;
+            log.prepend(entry);
+        }
+
+        function runAIQuery() {
+            const q = document.getElementById('aiQuery').value.trim();
+            if (!q) return;
+
+            alert(`🧠 MCP Agent Response for: "${q}"\n\nResult: Query parsed via MarketPulse MCP engine. Sharpe Ratio: 2.14, Diversification: 88/100, Invoices Matched: 99.4%. Executed in 35ms with FINBOURNE audit signature.`);
+        }
+    </script>
+</body>
+</html>
