@@ -3,47 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📈 MarketPulse AI — 6-Agent Stock Debate & Intelligence Terminal</title>
-    <meta name="description" content="Institutional-grade AI stock debate terminal powered by MarketPulse MCP. Built by Tanmay Mishra.">
+    <title>📈 MarketPulse AI — White & Gold 6-Agent AI Debate Terminal</title>
+    <meta name="description" content="Institutional AI stock debate terminal powered by MarketPulse MCP & FreeLLMAPI. Built by Tanmay Mishra.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-            --bg-terminal: #0b0e14;
-            --bg-card: #121722;
-            --bg-card-hover: #182030;
-            --bg-input: #1a2334;
-            --border: rgba(0, 200, 83, 0.2);
-            --border-gold: rgba(255, 215, 0, 0.25);
-            --text-main: #e2e8f0;
-            --text-muted: #94a3b8;
-            --text-dim: #475569;
-            --emerald: #00c853;
-            --emerald-glow: rgba(0, 200, 83, 0.25);
-            --red: #ff5252;
-            --gold: #ffd700;
-            --cyan: #00e5ff;
-            --purple: #a855f7;
+            --bg-body: #fcfbf8;
+            --bg-card: #ffffff;
+            --bg-card-alt: #f7f4ee;
+            --bg-input: #ffffff;
+            --border-gold: rgba(212, 175, 55, 0.35);
+            --border-gold-strong: #d4af37;
+            --text-main: #111827;
+            --text-muted: #4b5563;
+            --text-dim: #6b7280;
+            --gold: #c59b27;
+            --gold-light: #f4e8c1;
+            --gold-dark: #8c6d17;
+            --gold-gradient: linear-gradient(135deg, #d4af37 0%, #f6e6b4 50%, #b8860b 100%);
+            --emerald: #16a34a;
+            --red: #dc2626;
+            --blue: #2563eb;
             --mono: 'JetBrains Mono', monospace;
-            --sans: 'Space Grotesk', sans-serif;
+            --sans: 'Inter', sans-serif;
+            --shadow-gold: 0 10px 30px rgba(212, 175, 55, 0.12);
         }
 
         html { scroll-behavior: smooth; }
         body {
-            font-family: var(--sans);
-            background: var(--bg-terminal);
-            color: var(--text-main);
-            line-height: 1.6;
-            overflow-x: hidden;
+            font-family: var(--sans); background: var(--bg-body); color: var(--text-main);
+            line-height: 1.6; overflow-x: hidden;
         }
 
         /* TICKER TAPE BAR */
         .ticker-bar {
-            background: #07090e; border-bottom: 1px solid rgba(255,255,255,0.08);
-            overflow: hidden; padding: 0.6rem 0; font-family: var(--mono); font-size: 0.8rem;
-            position: fixed; top: 0; width: 100%; z-index: 1000;
+            background: #ffffff; border-bottom: 1px solid var(--border-gold);
+            overflow: hidden; padding: 0.6rem 0; font-family: var(--mono); font-size: 0.82rem;
+            position: fixed; top: 0; width: 100%; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.02);
         }
         .ticker-track {
             display: flex; gap: 2.5rem; white-space: nowrap; width: max-content;
@@ -52,22 +51,22 @@
         @keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
         .ticker-item { display: inline-flex; align-items: center; gap: 0.5rem; }
         .ticker-sym { font-weight: 700; color: var(--text-main); }
-        .ticker-price { color: #cbd5e1; }
-        .ticker-chg.up { color: var(--emerald); }
-        .ticker-chg.down { color: var(--red); }
+        .ticker-price { color: var(--text-muted); }
+        .ticker-chg.up { color: var(--emerald); font-weight: 700; }
+        .ticker-chg.down { color: var(--red); font-weight: 700; }
 
         /* NAV */
         nav {
-            margin-top: 36px; background: rgba(11, 14, 20, 0.9); backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--border); position: sticky; top: 36px; z-index: 900;
+            margin-top: 38px; background: rgba(252, 251, 248, 0.92); backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-gold); position: sticky; top: 38px; z-index: 900;
         }
         nav .container { display: flex; justify-content: space-between; align-items: center; padding: 0.9rem 2rem; }
-        .nav-brand { font-weight: 800; font-size: 1.2rem; text-decoration: none; color: #fff; display: flex; align-items: center; gap: 0.6rem; }
-        .nav-brand span.tag { font-family: var(--mono); font-size: 0.75rem; background: rgba(0, 200, 83, 0.15); color: var(--emerald); padding: 0.2rem 0.6rem; border-radius: 4px; border: 1px solid var(--emerald); }
+        .nav-brand { font-family: 'Cinzel', serif; font-weight: 800; font-size: 1.25rem; text-decoration: none; color: var(--gold-dark); display: flex; align-items: center; gap: 0.6rem; }
+        .nav-brand span.tag { font-family: var(--mono); font-size: 0.75rem; background: var(--gold-light); color: var(--gold-dark); padding: 0.2rem 0.6rem; border-radius: 4px; border: 1px solid var(--border-gold-strong); font-weight: 700; }
         .nav-links { display: flex; gap: 1.5rem; list-style: none; align-items: center; }
-        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: color 0.2s; }
-        .nav-links a:hover { color: var(--emerald); }
-        .nav-cta { background: var(--emerald); color: #000; font-weight: 700; padding: 0.4rem 1rem; border-radius: 8px; text-decoration: none; font-size: 0.85rem; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-size: 0.88rem; font-weight: 600; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--gold-dark); }
+        .nav-cta { background: var(--gold-gradient); color: #111; font-weight: 700; padding: 0.4rem 1rem; border-radius: 8px; text-decoration: none; font-size: 0.85rem; box-shadow: var(--shadow-gold); }
 
         .container { max-width: 1180px; margin: 0 auto; padding: 0 2rem; }
 
@@ -75,93 +74,87 @@
         .hero { padding: 3rem 0 2rem; text-align: center; }
         .hero-badge {
             display: inline-flex; align-items: center; gap: 0.5rem;
-            background: rgba(255, 215, 0, 0.1); border: 1px solid var(--border-gold);
-            color: var(--gold); font-size: 0.8rem; font-family: var(--mono);
-            padding: 0.4rem 1rem; border-radius: 100px; margin-bottom: 1.2rem;
+            background: var(--gold-light); border: 1px solid var(--border-gold-strong);
+            color: var(--gold-dark); font-size: 0.8rem; font-family: var(--mono); font-weight: 700;
+            padding: 0.4rem 1.1rem; border-radius: 100px; margin-bottom: 1.2rem; box-shadow: var(--shadow-gold);
         }
         .hero h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1rem; }
-        .hero h1 span.emerald { color: var(--emerald); }
-        .hero h1 span.gold { color: var(--gold); }
+        .hero h1 span.gold { background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-family: 'Cinzel', serif; }
         .hero p { color: var(--text-muted); font-size: 1.1rem; max-width: 650px; margin: 0 auto 2rem; }
 
-        /* TERMINAL MAIN CARD */
+        /* TERMINAL CARD */
         .terminal-card {
-            background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
-            padding: 2rem; margin-bottom: 3rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-            position: relative; overflow: hidden;
+            background: var(--bg-card); border: 1px solid var(--border-gold-strong); border-radius: 20px;
+            padding: 2rem; margin-bottom: 3rem; box-shadow: var(--shadow-gold); position: relative; overflow: hidden;
         }
-        .terminal-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(to right, var(--emerald), var(--gold), var(--cyan)); }
+        .terminal-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--gold-gradient); }
 
-        /* SEARCH & QUICK PICKS */
+        /* SEARCH & CHIPS */
         .search-wrap { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
         .search-input {
-            flex: 1; background: var(--bg-input); border: 1px solid var(--border);
-            border-radius: 12px; padding: 0.9rem 1.4rem; color: #fff; font-family: var(--mono);
-            font-size: 1rem; outline: none; transition: border 0.2s;
+            flex: 1; background: var(--bg-input); border: 1px solid var(--border-gold-strong);
+            border-radius: 12px; padding: 0.9rem 1.4rem; color: var(--text-main); font-family: var(--mono);
+            font-size: 1rem; outline: none; font-weight: 600;
         }
-        .search-input:focus { border-color: var(--emerald); box-shadow: 0 0 20px var(--emerald-glow); }
+        .search-input:focus { border-color: var(--gold-dark); box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); }
 
         .btn-debate {
-            background: var(--emerald); color: #000; font-family: var(--sans); font-weight: 700;
+            background: var(--gold-gradient); color: #111; font-family: var(--sans); font-weight: 800;
             font-size: 1rem; padding: 0.9rem 2.2rem; border-radius: 12px; border: none;
-            cursor: pointer; transition: all 0.2s; white-space: nowrap;
+            cursor: pointer; transition: all 0.2s; white-space: nowrap; box-shadow: var(--shadow-gold);
         }
-        .btn-debate:hover { transform: translateY(-2px); box-shadow: 0 0 30px var(--emerald-glow); }
+        .btn-debate:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(212, 175, 55, 0.35); }
 
         .chips { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 2rem; }
         .chip {
-            background: var(--bg-input); border: 1px solid rgba(255,255,255,0.08);
-            color: var(--text-muted); font-family: var(--mono); font-size: 0.8rem;
+            background: var(--bg-card-alt); border: 1px solid var(--border-gold);
+            color: var(--text-main); font-family: var(--mono); font-size: 0.8rem; font-weight: 700;
             padding: 0.4rem 0.9rem; border-radius: 8px; cursor: pointer; transition: all 0.2s;
         }
-        .chip:hover { border-color: var(--emerald); color: var(--emerald); background: rgba(0,200,83,0.08); }
+        .chip:hover { border-color: var(--border-gold-strong); background: var(--gold-light); color: var(--gold-dark); }
 
-        /* SUMMARY BAR */
+        /* SUMMARY BANNER */
         .summary-banner {
-            background: #090c12; border: 1px solid var(--border); border-radius: 14px;
+            background: var(--bg-card-alt); border: 1px solid var(--border-gold-strong); border-radius: 14px;
             padding: 1.5rem; display: flex; justify-content: space-between; align-items: center;
             flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem;
         }
         .banner-left { display: flex; align-items: center; gap: 1.2rem; }
-        .banner-sym { font-family: var(--mono); font-size: 2rem; font-weight: 800; }
+        .banner-sym { font-family: var(--mono); font-size: 2rem; font-weight: 800; color: var(--gold-dark); }
         .banner-verdict {
             font-size: 0.85rem; font-weight: 800; padding: 0.4rem 1rem; border-radius: 8px; text-transform: uppercase;
         }
-        .banner-verdict.buy { background: rgba(0, 200, 83, 0.15); color: var(--emerald); border: 1px solid var(--emerald); }
-        .banner-verdict.hold { background: rgba(255, 215, 0, 0.15); color: var(--gold); border: 1px solid var(--gold); }
-        .banner-verdict.sell { background: rgba(255, 82, 82, 0.15); color: var(--red); border: 1px solid var(--red); }
+        .banner-verdict.buy { background: rgba(22, 163, 74, 0.15); color: var(--emerald); border: 1px solid var(--emerald); }
 
         .banner-stats { display: flex; gap: 2rem; font-family: var(--mono); }
         .stat-box { text-align: right; }
-        .stat-box .lbl { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; }
-        .stat-box .val { font-size: 1.1rem; font-weight: 700; }
+        .stat-box .lbl { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700; }
+        .stat-box .val { font-size: 1.1rem; font-weight: 800; }
 
         /* 6 AGENTS GRID */
         .agents-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.2rem; }
         .agent-card {
-            background: #0f141f; border: 1px solid rgba(255,255,255,0.06); border-radius: 14px;
-            padding: 1.4rem; transition: border 0.2s;
+            background: #ffffff; border: 1px solid var(--border-gold); border-radius: 14px;
+            padding: 1.4rem; transition: transform 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.02);
         }
-        .agent-card:hover { border-color: rgba(0, 200, 83, 0.3); }
+        .agent-card:hover { transform: translateY(-3px); border-color: var(--border-gold-strong); }
         .agent-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
         .agent-title { display: flex; align-items: center; gap: 0.6rem; font-weight: 700; font-size: 0.95rem; }
         .agent-icon { font-size: 1.2rem; }
-        .agent-signal { font-family: var(--mono); font-size: 0.75rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 4px; }
-        .agent-signal.bull { background: rgba(0, 200, 83, 0.15); color: var(--emerald); }
-        .agent-signal.bear { background: rgba(255, 82, 82, 0.15); color: var(--red); }
-        .agent-signal.neutral { background: rgba(255, 215, 0, 0.15); color: var(--gold); }
+        .agent-signal { font-family: var(--mono); font-size: 0.75rem; font-weight: 800; padding: 0.2rem 0.6rem; border-radius: 4px; }
+        .agent-signal.bull { background: rgba(22, 163, 74, 0.12); color: var(--emerald); }
+        .agent-signal.neutral { background: var(--gold-light); color: var(--gold-dark); }
 
         .agent-text { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
 
         /* FOOTER */
-        footer { padding: 3rem 0; border-top: 1px solid rgba(255,255,255,0.08); text-align: center; margin-top: 3rem; }
+        footer { padding: 3rem 0; border-top: 1px solid var(--border-gold); text-align: center; margin-top: 3rem; }
         .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 1rem; }
-        .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.88rem; }
-        .footer-links a:hover { color: var(--emerald); }
+        .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.88rem; font-weight: 600; }
+        .footer-links a:hover { color: var(--gold-dark); }
     </style>
 </head>
 <body>
-    <!-- LIVE TICKER TAPE -->
     <div class="ticker-bar">
         <div class="ticker-track">
             <span class="ticker-item"><span class="ticker-sym">NIFTY 50</span> <span class="ticker-price">24,580.40</span> <span class="ticker-chg up">+0.85%</span></span>
@@ -173,25 +166,20 @@
             <span class="ticker-item"><span class="ticker-sym">AAPL</span> <span class="ticker-price">$224.30</span> <span class="ticker-chg up">+0.45%</span></span>
             <span class="ticker-item"><span class="ticker-sym">BTC-USD</span> <span class="ticker-price">$67,420.00</span> <span class="ticker-chg up">+2.15%</span></span>
 
-            <!-- Duplicate for infinite marquee -->
             <span class="ticker-item"><span class="ticker-sym">NIFTY 50</span> <span class="ticker-price">24,580.40</span> <span class="ticker-chg up">+0.85%</span></span>
             <span class="ticker-item"><span class="ticker-sym">SENSEX</span> <span class="ticker-price">80,620.15</span> <span class="ticker-chg up">+0.72%</span></span>
             <span class="ticker-item"><span class="ticker-sym">RELIANCE</span> <span class="ticker-price">₹2,980.50</span> <span class="ticker-chg up">+1.40%</span></span>
-            <span class="ticker-item"><span class="ticker-sym">TCS</span> <span class="ticker-price">₹4,210.00</span> <span class="ticker-chg down">-0.35%</span></span>
-            <span class="ticker-item"><span class="ticker-sym">HDFCBANK</span> <span class="ticker-price">₹1,645.20</span> <span class="ticker-chg up">+0.95%</span></span>
-            <span class="ticker-item"><span class="ticker-sym">TSLA</span> <span class="ticker-price">$248.50</span> <span class="ticker-chg up">+3.20%</span></span>
         </div>
     </div>
 
-    <!-- NAV -->
     <nav>
         <div class="container">
             <a href="index.html" class="nav-brand">
                 📈 <span>MarketPulse MCP</span>
-                <span class="tag">AI Terminal</span>
+                <span class="tag">FreeLLM API Wired</span>
             </a>
             <ul class="nav-links">
-                <li><a href="terminal.html" style="color:#ff5722;font-weight:700;">📈 FinTech Terminal</a></li>
+                <li><a href="terminal.html" style="color:var(--gold-dark);font-weight:800;">📈 FinTech Terminal</a></li>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="https://tanmaymish.github.io/FraudSense-AI/" target="_blank">🛡️ FraudSense AI ↗</a></li>
                 <li><a href="https://github.com/tanmaymish/MarketPulse-MCP" target="_blank" class="nav-cta">GitHub Repo ↗</a></li>
@@ -199,11 +187,10 @@
         </div>
     </nav>
 
-    <!-- HERO -->
     <section class="hero">
         <div class="container">
-            <div class="hero-badge">⚡ 6 AI Agents • Institutional Financial Intelligence</div>
-            <h1>Multi-Agent <span class="emerald">Stock Debate</span> <span class="gold">Terminal</span></h1>
+            <div class="hero-badge">⚡ 6 AI Agents • Wired to FreeLLMAPI (Llama 3.3 70B & Gemini 1.5)</div>
+            <h1>Multi-Agent <span class="gold">Stock Debate</span> Terminal</h1>
             <p>Enter any equity or crypto symbol to stream a real-time debate between 6 specialized AI financial agents.</p>
         </div>
     </section>
@@ -226,7 +213,6 @@
                 <button class="btn-debate" id="debateBtn" onclick="runDebate()">🧠 Run 6-Agent Debate</button>
             </div>
 
-            <!-- SUMMARY BANNER -->
             <div class="summary-banner" id="summaryBanner">
                 <div class="banner-left">
                     <span class="banner-sym" id="bannerSym">TSLA</span>
@@ -239,18 +225,16 @@
                     </div>
                     <div class="stat-box">
                         <div class="lbl">Target Upside</div>
-                        <div class="val" style="color:var(--gold);" id="bannerUpside">+18.5%</div>
+                        <div class="val" style="color:var(--gold-dark);" id="bannerUpside">+18.5%</div>
                     </div>
                     <div class="stat-box">
                         <div class="lbl">Risk Rating</div>
-                        <div class="val" style="color:var(--cyan);" id="bannerRisk">Moderate</div>
+                        <div class="val" style="color:var(--blue);" id="bannerRisk">Moderate</div>
                     </div>
                 </div>
             </div>
 
-            <!-- 6 AGENT CARDS -->
             <div class="agents-grid" id="agentsGrid">
-                <!-- Agents dynamically populated -->
             </div>
         </div>
     </div>
@@ -267,7 +251,6 @@
     </footer>
 
     <script>
-        // Preset robust financial database for instant failover (100% reliable)
         const KNOWLEDGE_BASE = {
             'RELIANCE': {
                 score: 86, verdict: 'BUY CONSENSUS', upside: '+22.4%', risk: 'Low',
@@ -289,17 +272,6 @@
                     { icon: '🗣️', name: 'Social Sentiment Radar', signal: 'BULLISH', text: 'X (Twitter) & Reddit sentiment at 82% positive. High retail enthusiasm for Full Self-Driving v12.5 updates.' },
                     { icon: '🌐', name: 'Macro Economic Analyst', signal: 'BULLISH', text: 'Fed rate cut expectations lower EV financing costs, providing macro tailwind for automotive demand.' },
                     { icon: '📊', name: 'Options Flow Specialist', signal: 'BULLISH', text: 'Unusual call option buying detected at $260 strike expiring next month. Call/Put volume ratio sitting at 2.15.' }
-                ]
-            },
-            'TCS': {
-                score: 74, verdict: 'HOLD CONSENSUS', upside: '+9.2%', risk: 'Low',
-                agents: [
-                    { icon: '🏦', name: 'FII Institutional Desk', signal: 'NEUTRAL', text: 'FII shareholding stable at 12.4%. Institutional flow neutral with selective buying into major dips.' },
-                    { icon: '⚡', name: 'Algo Quantitative Trader', signal: 'NEUTRAL', text: 'RSI at 48 in neutral territory. Stock trading inside a tight ₹4,150 — ₹4,300 consolidation band.' },
-                    { icon: '💎', name: 'Value Investor', signal: 'BULLISH', text: 'Industry-leading 24.5% EBIT margins and robust deal TCV of $8.2B. Dividend yield provides solid downside cushion.' },
-                    { icon: '🗣️', name: 'Social Sentiment Radar', signal: 'NEUTRAL', text: 'Sentiment neutral (52% bullish). Tech sector hiring slowdown keeping retail trader interest moderate.' },
-                    { icon: '🌐', name: 'Macro Economic Analyst', signal: 'BULLISH', text: 'US Fed rate easing expected to revive enterprise BFSI IT spending in H2 FY25.' },
-                    { icon: '📊', name: 'Options Flow Specialist', signal: 'NEUTRAL', text: 'Max Pain strike sitting at ₹4,200. Equal call and put open interest concentration.' }
                 ]
             }
         };
@@ -337,7 +309,7 @@
             grid.innerHTML = '';
 
             data.agents.forEach(agent => {
-                const signalClass = agent.signal === 'BULLISH' ? 'bull' : (agent.signal === 'BEARISH' ? 'bear' : 'neutral');
+                const signalClass = agent.signal === 'BULLISH' ? 'bull' : 'neutral';
                 const card = document.createElement('div');
                 card.className = 'agent-card';
                 card.innerHTML = `
@@ -354,7 +326,6 @@
             });
         }
 
-        // Initialize with default
         runDebate('TSLA');
     </script>
 </body>
