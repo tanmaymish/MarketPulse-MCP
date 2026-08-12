@@ -3,34 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MarketPulse FinTech Terminal — White & Gold Executive Suite</title>
+    <title>MarketPulse FinTech Terminal — Zerodha Official Suite</title>
     <meta name="description" content="Institutional fintech automation & portfolio suite combining Zerodha Kite/Coin UI with Ramp spend AI, Alpaca execution, Grasshopper banking, and FINBOURNE audit trails. Built by Tanmay Mishra.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         :root {
-            --bg-body: #fcfbf8;
-            --bg-panel: #ffffff;
-            --bg-card: #f8f6f0;
-            --bg-hover: #f3efe6;
-            --border-gold: rgba(212, 175, 55, 0.35);
-            --border-gold-strong: #d4af37;
-            --text-main: #111827;
-            --text-muted: #4b5563;
-            --text-dim: #6b7280;
-            --gold: #c59b27;
-            --gold-light: #f5eccf;
-            --gold-dark: #8c6d17;
-            --gold-gradient: linear-gradient(135deg, #d4af37 0%, #f6e6b4 50%, #b8860b 100%);
-            --green: #16a34a;
-            --red: #dc2626;
-            --blue: #2563eb;
-            --purple: #7c3aed;
+            --bg-body: #ffffff;
+            --bg-panel: #fbfbfb;
+            --border-zerodha: #eee;
+            --border-strong: #e0e0e0;
+            --text-main: #222222;
+            --text-muted: #666666;
+            --zerodha-blue: #387ed1;
+            --zerodha-blue-hover: #2b6cb0;
+            --kite-orange: #ff5722;
+            --kite-orange-light: #fff2ee;
+            --coin-blue-light: #eaf2fb;
+            --emerald: #25a750;
+            --crimson: #df4949;
+            --shadow-zerodha: 0 8px 30px rgba(0,0,0,0.04);
+            --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             --mono: 'JetBrains Mono', monospace;
-            --sans: 'Inter', sans-serif;
-            --shadow-gold: 0 10px 30px rgba(212, 175, 55, 0.12);
         }
 
         html { scroll-behavior: smooth; }
@@ -41,107 +37,107 @@
 
         /* HEADER */
         .kite-header {
-            background: #ffffff; border-bottom: 1px solid var(--border-gold-strong);
-            padding: 0 1.5rem; height: 52px; display: flex; align-items: center; justify-content: space-between;
-            flex-shrink: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            background: #ffffff; border-bottom: 1px solid var(--border-zerodha);
+            padding: 0 1.5rem; height: 56px; display: flex; align-items: center; justify-content: space-between;
+            flex-shrink: 0;
         }
         .header-left { display: flex; align-items: center; gap: 1.5rem; }
-        .logo { display: flex; align-items: center; gap: 0.5rem; font-family: 'Cinzel', serif; font-weight: 800; font-size: 1.15rem; color: var(--gold-dark); text-decoration: none; }
-        .logo-tag { font-family: var(--sans); font-size: 0.7rem; background: var(--gold-gradient); color: #111; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 800; }
+        .logo { display: flex; align-items: center; gap: 0.5rem; font-weight: 800; font-size: 1.15rem; color: var(--text-main); text-decoration: none; }
+        .logo-tag { font-size: 0.72rem; background: var(--kite-orange-light); color: var(--kite-orange); padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 700; }
         
-        .header-tabs { display: flex; height: 52px; }
+        .header-tabs { display: flex; height: 56px; }
         .tab-btn {
             height: 100%; padding: 0 1.2rem; display: flex; align-items: center; gap: 0.5rem;
-            color: var(--text-muted); font-size: 0.85rem; font-weight: 700; cursor: pointer;
+            color: var(--text-muted); font-size: 0.88rem; font-weight: 600; cursor: pointer;
             border-bottom: 3px solid transparent; transition: all 0.2s; background: transparent; border-top: none; border-left: none; border-right: none;
         }
-        .tab-btn:hover { color: var(--gold-dark); background: var(--gold-light); }
-        .tab-btn.active { color: var(--gold-dark); border-bottom-color: var(--border-gold-strong); background: var(--gold-light); }
+        .tab-btn:hover { color: var(--zerodha-blue); background: var(--coin-blue-light); }
+        .tab-btn.active { color: var(--zerodha-blue); border-bottom-color: var(--zerodha-blue); background: var(--coin-blue-light); }
 
         .header-right { display: flex; align-items: center; gap: 1rem; font-size: 0.85rem; }
         .user-profile { display: flex; align-items: center; gap: 0.5rem; color: var(--text-main); font-weight: 700; }
-        .avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--gold-gradient); color: #111; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.75rem; box-shadow: var(--shadow-gold); }
+        .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--zerodha-blue); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; }
 
         /* BODY LAYOUT */
         .app-body { display: flex; flex: 1; overflow: hidden; }
 
         /* SIDEBAR WATCHLIST */
         .sidebar {
-            width: 320px; background: #ffffff; border-right: 1px solid var(--border-gold);
+            width: 320px; background: var(--bg-panel); border-right: 1px solid var(--border-zerodha);
             display: flex; flex-direction: column; flex-shrink: 0;
         }
-        .search-box { padding: 0.75rem; border-bottom: 1px solid var(--border-gold); }
+        .search-box { padding: 0.75rem; border-bottom: 1px solid var(--border-zerodha); }
         .search-box input {
-            width: 100%; background: var(--bg-card); border: 1px solid var(--border-gold-strong);
-            border-radius: 6px; padding: 0.5rem 0.8rem; color: var(--text-main); font-family: var(--mono); font-size: 0.85rem; outline: none; font-weight: 600;
+            width: 100%; background: #ffffff; border: 1px solid var(--border-strong);
+            border-radius: 4px; padding: 0.5rem 0.8rem; color: var(--text-main); font-family: var(--mono); font-size: 0.85rem; outline: none; font-weight: 500;
         }
-        .search-box input:focus { border-color: var(--gold-dark); box-shadow: 0 0 10px rgba(212,175,55,0.3); }
+        .search-box input:focus { border-color: var(--zerodha-blue); }
 
         .watchlist { flex: 1; overflow-y: auto; }
         .watch-item {
-            padding: 0.85rem 1rem; border-bottom: 1px solid rgba(212,175,55,0.15);
+            padding: 0.85rem 1rem; border-bottom: 1px solid var(--border-zerodha);
             display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: background 0.15s;
         }
-        .watch-item:hover { background: var(--gold-light); }
-        .watch-item.selected { background: var(--gold-light); border-left: 4px solid var(--border-gold-strong); }
-        .sym-name { font-weight: 800; font-size: 0.88rem; font-family: var(--mono); color: var(--gold-dark); }
-        .sym-exch { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; }
-        .sym-price { font-family: var(--mono); font-size: 0.88rem; font-weight: 700; text-align: right; }
-        .sym-chg { font-size: 0.75rem; font-family: var(--mono); font-weight: 700; }
-        .up { color: var(--green); } .down { color: var(--red); }
+        .watch-item:hover { background: #ffffff; }
+        .watch-item.selected { background: #ffffff; border-left: 4px solid var(--zerodha-blue); }
+        .sym-name { font-weight: 700; font-size: 0.88rem; font-family: var(--mono); color: var(--text-main); }
+        .sym-exch { font-size: 0.7rem; color: var(--text-muted); font-weight: 500; }
+        .sym-price { font-family: var(--mono); font-size: 0.88rem; font-weight: 600; text-align: right; }
+        .sym-chg { font-size: 0.75rem; font-family: var(--mono); font-weight: 600; }
+        .up { color: var(--emerald); } .down { color: var(--crimson); }
 
         /* WORKSPACE */
-        .workspace { flex: 1; background: var(--bg-body); overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+        .workspace { flex: 1; background: #ffffff; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
 
         .module-panel { display: none; flex-direction: column; gap: 1.5rem; }
         .module-panel.active { display: flex; }
 
         .card-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
         .stat-card {
-            background: #ffffff; border: 1px solid var(--border-gold); border-radius: 12px;
-            padding: 1.25rem; display: flex; flex-direction: column; gap: 0.4rem; box-shadow: var(--shadow-gold);
+            background: var(--bg-panel); border: 1px solid var(--border-zerodha); border-radius: 6px;
+            padding: 1.25rem; display: flex; flex-direction: column; gap: 0.4rem;
         }
-        .stat-title { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 0.05em; }
-        .stat-val { font-size: 1.8rem; font-weight: 900; font-family: var(--mono); color: var(--gold-dark); }
-        .stat-sub { font-size: 0.78rem; color: var(--text-muted); font-weight: 600; }
+        .stat-title { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; }
+        .stat-val { font-size: 1.8rem; font-weight: 700; font-family: var(--mono); color: var(--zerodha-blue); }
+        .stat-sub { font-size: 0.78rem; color: var(--text-muted); font-weight: 500; }
 
         .panel-box {
-            background: #ffffff; border: 1px solid var(--border-gold-strong); border-radius: 14px; padding: 1.5rem; box-shadow: var(--shadow-gold);
+            background: #ffffff; border: 1px solid var(--border-strong); border-radius: 6px; padding: 1.5rem; box-shadow: var(--shadow-zerodha);
         }
-        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-gold); }
-        .panel-title { font-weight: 800; font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem; font-family: 'Cinzel', serif; color: var(--gold-dark); }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-zerodha); }
+        .panel-title { font-weight: 700; font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem; color: var(--text-main); }
 
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th { text-align: left; padding: 0.75rem 1rem; color: var(--text-muted); border-bottom: 1px solid var(--border-gold); font-size: 0.75rem; text-transform: uppercase; font-weight: 800; }
-        td { padding: 0.85rem 1rem; border-bottom: 1px solid rgba(212,175,55,0.15); font-family: var(--mono); font-weight: 600; }
-        tr:hover td { background: var(--gold-light); }
+        th { text-align: left; padding: 0.75rem 1rem; color: var(--text-muted); border-bottom: 1px solid var(--border-zerodha); font-size: 0.75rem; text-transform: uppercase; font-weight: 600; }
+        td { padding: 0.85rem 1rem; border-bottom: 1px solid var(--border-zerodha); font-family: var(--mono); font-weight: 500; }
+        tr:hover td { background: var(--bg-panel); }
 
         .btn-action {
-            padding: 0.5rem 1rem; border-radius: 6px; font-weight: 800; font-size: 0.8rem; border: none; cursor: pointer; transition: opacity 0.2s;
+            padding: 0.55rem 1.1rem; border-radius: 4px; font-weight: 700; font-size: 0.82rem; border: none; cursor: pointer; transition: opacity 0.2s;
         }
-        .btn-buy { background: var(--green); color: #fff; }
-        .btn-sell { background: var(--red); color: #fff; }
-        .btn-gold { background: var(--gold-gradient); color: #111; box-shadow: var(--shadow-gold); }
+        .btn-buy { background: var(--emerald); color: #fff; }
+        .btn-sell { background: var(--crimson); color: #fff; }
+        .btn-zerodha { background: var(--zerodha-blue); color: #fff; }
 
         .ai-prompt-bar {
-            background: #ffffff; border: 1px solid var(--border-gold-strong); border-radius: 12px; padding: 1rem;
-            display: flex; gap: 0.75rem; align-items: center; box-shadow: var(--shadow-gold);
+            background: var(--bg-panel); border: 1px solid var(--border-strong); border-radius: 6px; padding: 1rem;
+            display: flex; gap: 0.75rem; align-items: center;
         }
         .ai-prompt-bar input {
-            flex: 1; background: var(--bg-card); border: 1px solid var(--border-gold); border-radius: 8px;
-            padding: 0.75rem 1rem; color: var(--text-main); font-size: 0.9rem; outline: none; font-weight: 600;
+            flex: 1; background: #ffffff; border: 1px solid var(--border-strong); border-radius: 4px;
+            padding: 0.75rem 1rem; color: var(--text-main); font-size: 0.9rem; outline: none; font-weight: 500;
         }
-        .ai-prompt-bar input:focus { border-color: var(--gold-dark); }
+        .ai-prompt-bar input:focus { border-color: var(--zerodha-blue); }
 
         .audit-log { font-family: var(--mono); font-size: 0.82rem; display: flex; flex-direction: column; gap: 0.6rem; }
-        .log-entry { padding: 0.65rem 0.9rem; background: var(--bg-card); border-left: 4px solid var(--gold-dark); border-radius: 4px; display: flex; justify-content: space-between; font-weight: 600; }
+        .log-entry { padding: 0.65rem 0.9rem; background: var(--bg-panel); border-left: 4px solid var(--zerodha-blue); border-radius: 4px; display: flex; justify-content: space-between; font-weight: 500; }
     </style>
 </head>
 <body>
     <header class="kite-header">
         <div class="header-left">
             <a href="index.html" class="logo">
-                📈 MarketPulse <span class="logo-tag">Executive Suite</span>
+                📈 MarketPulse <span class="logo-tag">Kite & Coin Suite</span>
             </a>
             <div class="header-tabs">
                 <button class="tab-btn active" onclick="switchTab('kite')">📈 Kite Trading (Alpaca)</button>
@@ -220,9 +216,9 @@
 
         <main class="workspace">
             <div class="ai-prompt-bar">
-                <span style="font-size:1.2rem;">👑</span>
+                <span style="font-size:1.2rem;">⚡</span>
                 <input type="text" id="aiQuery" placeholder="Ask AI in plain English: 'What is my portfolio Sharpe ratio?', 'Match pending Ramp invoices', or 'Run Alpaca algo buy order'..." onkeydown="if(event.key==='Enter')runAIQuery()">
-                <button class="btn-action btn-gold" onclick="runAIQuery()">⚡ Ask MCP Agent</button>
+                <button class="btn-action btn-zerodha" onclick="runAIQuery()">Ask Zerodha AI</button>
             </div>
 
             <!-- MODULE 1: ZERODHA KITE + ALPACA -->
@@ -235,12 +231,12 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-title">Alpaca Execution Engine</div>
-                        <div class="stat-val" style="color:var(--green);">ACTIVE</div>
+                        <div class="stat-val" style="color:var(--emerald);">ACTIVE</div>
                         <div class="stat-sub">Direct Market Access</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-title">Put-Call Ratio (PCR)</div>
-                        <div class="stat-val" style="color:var(--blue);">1.28</div>
+                        <div class="stat-val" style="color:var(--zerodha-blue);">1.28</div>
                         <div class="stat-sub">Bullish Accumulation Zone</div>
                     </div>
                 </div>
@@ -298,12 +294,12 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-title">Portfolio Sharpe Ratio</div>
-                        <div class="stat-val" style="color:var(--green);">2.14</div>
+                        <div class="stat-val" style="color:var(--emerald);">2.14</div>
                         <div class="stat-sub">Risk-Adjusted Return: Excellent</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-title">Diversification Score</div>
-                        <div class="stat-val" style="color:var(--gold-dark);">88 / 100</div>
+                        <div class="stat-val" style="color:var(--zerodha-blue);">88 / 100</div>
                         <div class="stat-sub">Max Sector Concentration: 28% Tech</div>
                     </div>
                 </div>
@@ -319,12 +315,12 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-title">AI Invoice Matching</div>
-                        <div class="stat-val" style="color:var(--green);">99.4%</div>
+                        <div class="stat-val" style="color:var(--emerald);">99.4%</div>
                         <div class="stat-sub">Zero Duplicate Payments</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-title">Vendor Card Controls</div>
-                        <div class="stat-val" style="color:var(--purple);">42 Active</div>
+                        <div class="stat-val" style="color:var(--zerodha-blue);">42 Active</div>
                         <div class="stat-sub">Automated Receipt Capture</div>
                     </div>
                 </div>
@@ -340,12 +336,12 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-title">Cash Runway</div>
-                        <div class="stat-val" style="color:var(--green);">24.2 Months</div>
+                        <div class="stat-val" style="color:var(--emerald);">24.2 Months</div>
                         <div class="stat-sub">Net Monthly Burn: $76,000</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-title">Real-Time APY Yield</div>
-                        <div class="stat-val" style="color:var(--blue);">5.25% APY</div>
+                        <div class="stat-val" style="color:var(--zerodha-blue);">5.25% APY</div>
                         <div class="stat-sub">Automated Treasury Sweeps</div>
                     </div>
                 </div>
@@ -391,14 +387,14 @@
 
         function placeOrder(type) {
             const sym = document.getElementById('kiteSym').textContent;
-            alert(`⚡ Alpaca + Kite Order Executed: ${type} ${sym} at Market Price! Logged to FINBOURNE audit trail.`);
+            alert(`⚡ Zerodha + Alpaca Order Executed: ${type} ${sym} at Market Price! Logged to FINBOURNE audit trail.`);
         }
 
         function runAIQuery() {
             const q = document.getElementById('aiQuery').value.trim();
             if (!q) return;
 
-            alert(`👑 FreeLLMAPI Wired Agent Response for: "${q}"\n\nResult: Sharpe Ratio: 2.14, Diversification: 88/100, Invoices Matched: 99.4%. Executed in 32ms with FINBOURNE cryptographic signature.`);
+            alert(`⚡ Zerodha FreeLLMAPI AI Response for: "${q}"\n\nResult: Sharpe Ratio: 2.14, Diversification: 88/100, Invoices Matched: 99.4%. Executed in 32ms with FINBOURNE cryptographic signature.`);
         }
     </script>
 </body>
