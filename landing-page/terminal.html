@@ -63,15 +63,20 @@
 
         /* SIDEBAR WATCHLIST */
         .sidebar {
-            width: 320px; background: var(--bg-panel); border-right: 1px solid var(--border-zerodha);
+            width: 360px; background: var(--bg-panel); border-right: 1px solid var(--border-zerodha);
             display: flex; flex-direction: column; flex-shrink: 0;
         }
-        .search-box { padding: 0.75rem; border-bottom: 1px solid var(--border-zerodha); }
+        .search-box { padding: 0.75rem; border-bottom: 1px solid var(--border-zerodha); position: relative; }
         .search-box input {
             width: 100%; background: #ffffff; border: 1px solid var(--border-strong);
-            border-radius: 4px; padding: 0.5rem 0.8rem; color: var(--text-main); font-family: var(--mono); font-size: 0.85rem; outline: none; font-weight: 500;
+            border-radius: 4px; padding: 0.6rem 0.8rem; color: var(--text-main); font-family: var(--sans); font-size: 0.85rem; outline: none; font-weight: 500;
         }
         .search-box input:focus { border-color: var(--zerodha-blue); }
+
+        .section-header-tag {
+            padding: 0.4rem 0.85rem; background: #f0f4f8; color: var(--zerodha-blue);
+            font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border-zerodha);
+        }
 
         .watchlist { flex: 1; overflow-y: auto; }
         .watch-item {
@@ -140,7 +145,7 @@
                 📈 MarketPulse <span class="logo-tag">Kite & Coin Suite</span>
             </a>
             <div class="header-tabs">
-                <button class="tab-btn active" onclick="switchTab('kite')">📈 Kite Trading (Alpaca)</button>
+                <button class="tab-btn active" onclick="switchTab('kite')">📈 Kite Trading (Alpaca / NSE)</button>
                 <button class="tab-btn" onclick="switchTab('coin')">🪙 Coin Wealth (Zerodha)</button>
                 <button class="tab-btn" onclick="switchTab('ramp')">💳 Ramp Automation</button>
                 <button class="tab-btn" onclick="switchTab('grasshopper')">🏦 Grasshopper Bank</button>
@@ -158,10 +163,70 @@
     <div class="app-body">
         <aside class="sidebar">
             <div class="search-box">
-                <input type="text" placeholder="Search eg: RELIANCE, INFOSYS, TSLA, BTC...">
+                <input type="text" id="searchInput" placeholder="🔍 Live search (e.g. NIFTY, BANK, RELIANCE, TCS...)" oninput="filterWatchlist()">
             </div>
-            <div class="watchlist">
-                <div class="watch-item selected" onclick="selectStock('RELIANCE', '₹2,980.50', '+1.40%')">
+
+            <div class="watchlist" id="watchlistContainer">
+                <div class="section-header-tag">🇮🇳 Indian Major Indices</div>
+                
+                <div class="watch-item selected" data-search="nifty 50 benchmark index" onclick="selectStock('NIFTY 50', '24,320.50', '+0.85%')">
+                    <div>
+                        <div class="sym-name">NIFTY 50</div>
+                        <div class="sym-exch">NSE • BENCHMARK</div>
+                    </div>
+                    <div>
+                        <div class="sym-price">24,320.50</div>
+                        <div class="sym-chg up">+0.85%</div>
+                    </div>
+                </div>
+
+                <div class="watch-item" data-search="nifty bank banking sector" onclick="selectStock('NIFTY BANK', '52,140.80', '+1.12%')">
+                    <div>
+                        <div class="sym-name">NIFTY BANK</div>
+                        <div class="sym-exch">NSE • SECTOR</div>
+                    </div>
+                    <div>
+                        <div class="sym-price">52,140.80</div>
+                        <div class="sym-chg up">+1.12%</div>
+                    </div>
+                </div>
+
+                <div class="watch-item" data-search="nifty it tech sector" onclick="selectStock('NIFTY IT', '41,850.20', '-0.42%')">
+                    <div>
+                        <div class="sym-name">NIFTY IT</div>
+                        <div class="sym-exch">NSE • SECTOR</div>
+                    </div>
+                    <div>
+                        <div class="sym-price">41,850.20</div>
+                        <div class="sym-chg down">-0.42%</div>
+                    </div>
+                </div>
+
+                <div class="watch-item" data-search="sensex bse 30 bluechip" onclick="selectStock('SENSEX', '79,890.60', '+0.78%')">
+                    <div>
+                        <div class="sym-name">SENSEX</div>
+                        <div class="sym-exch">BSE • BLUECHIP</div>
+                    </div>
+                    <div>
+                        <div class="sym-price">79,890.60</div>
+                        <div class="sym-chg up">+0.78%</div>
+                    </div>
+                </div>
+
+                <div class="watch-item" data-search="nifty midcap 100" onclick="selectStock('NIFTY MIDCAP', '58,420.30', '+1.45%')">
+                    <div>
+                        <div class="sym-name">NIFTY MIDCAP</div>
+                        <div class="sym-exch">NSE • INDEX</div>
+                    </div>
+                    <div>
+                        <div class="sym-price">58,420.30</div>
+                        <div class="sym-chg up">+1.45%</div>
+                    </div>
+                </div>
+
+                <div class="section-header-tag">🇮🇳 Top High-Value Indian Stocks</div>
+
+                <div class="watch-item" data-search="reliance reliance industries nse" onclick="selectStock('RELIANCE', '₹2,980.50', '+1.40%')">
                     <div>
                         <div class="sym-name">RELIANCE</div>
                         <div class="sym-exch">NSE • EQUITY</div>
@@ -171,7 +236,8 @@
                         <div class="sym-chg up">+1.40%</div>
                     </div>
                 </div>
-                <div class="watch-item" onclick="selectStock('TCS', '₹4,210.00', '-0.35%')">
+
+                <div class="watch-item" data-search="tcs tata consultancy nse" onclick="selectStock('TCS', '₹4,210.00', '-0.35%')">
                     <div>
                         <div class="sym-name">TCS</div>
                         <div class="sym-exch">NSE • EQUITY</div>
@@ -181,7 +247,8 @@
                         <div class="sym-chg down">-0.35%</div>
                     </div>
                 </div>
-                <div class="watch-item" onclick="selectStock('HDFCBANK', '₹1,645.20', '+0.95%')">
+
+                <div class="watch-item" data-search="hdfcbank hdfc bank nse" onclick="selectStock('HDFCBANK', '₹1,645.20', '+0.95%')">
                     <div>
                         <div class="sym-name">HDFCBANK</div>
                         <div class="sym-exch">NSE • EQUITY</div>
@@ -191,7 +258,109 @@
                         <div class="sym-chg up">+0.95%</div>
                     </div>
                 </div>
-                <div class="watch-item" onclick="selectStock('TSLA', '$248.50', '+3.20%')">
+
+                <div class="watch-item" data-search="icicibank icici bank nse" onclick="selectStock('ICICIBANK', '₹1,215.40', '+1.60%')">
+                    <div>
+                        <div class="sym-name">ICICIBANK</div>
+                        <div class="sym-exch">NSE • EQUITY</div>
+                    </div>
+                    <div>
+                        <div class="sym-price">1,215.40</div>
+                        <div class="sym-chg up">+1.60%</div>
+                    </div>
+                </div>
+
+                <div class="watch-item" data-search="infy infosys nse" onclick="selectStock('INFY', '₹1,890.10', '-0.80%')">
+                    <div>
+                        <div class="sym-name">INFY</div>
+                        <div class="sym-exch">NSE • EQUITY</div>
+                    </div>
+                    <div>
+                        <div class="sym-price">1,890.10</div>
+                        <div class="sym-chg down">-0.80%</div>
+                    </div>
+                </div>
+
+                <div class="watch-item" data-search="bhartiartl bharti airtel nse" onclick="selectStock('BHARTIARTL', '₹1,560.80', '+2.10%')">
+                    <div>
+                        <div class="sym-name">BHARTIARTL</div>
+                        <div class="sym-exch">NSE • EQUITY</div>
+                    </div>
+                    <div>
+                        <div class="sym-price">1,560.80</div>
+                        <div class="sym-chg up">+2.10%</div>
+                    </div>
+                </div>
+
+                <div class="watch-item" data-search="itc itc ltd nse" onclick="selectStock('ITC', '₹495.20', '+0.40%')">
+                    <div>
+                        <div class="sym-name">ITC</div>
+                        <div class="sym-exch">NSE • EQUITY</div>
+                    </div>
+                    <div>
+                        <div class="sym-price">495.20</div>
+                        <div class="sym-chg up">+0.40%</div>
+                    </div>
+                </div>
+
+                <div class="watch-item" data-search="sbin state bank of india nse" onclick="selectStock('SBIN', '₹845.60', '+1.25%')">
+                    <div>
+                        <div class="sym-name">SBIN</div>
+                        <div class="sym-exch">NSE • EQUITY</div>
+                    </div>
+                    <div>
+                        <div class="sym-price">845.60</div>
+                        <div class="sym-chg up">+1.25%</div>
+                    </div>
+                </div>
+
+                <div class="watch-item" data-search="lt larsen toubro nse" onclick="selectStock('LT', '₹3,680.00', '+1.75%')">
+                    <div>
+                        <div class="sym-name">LT</div>
+                        <div class="sym-exch">NSE • EQUITY</div>
+                    </div>
+                    <div>
+                        <div class="sym-price">3,680.00</div>
+                        <div class="sym-chg up">+1.75%</div>
+                    </div>
+                </div>
+
+                <div class="watch-item" data-search="bajfinance bajaj finance nse" onclick="selectStock('BAJFINANCE', '₹6,890.50', '+2.40%')">
+                    <div>
+                        <div class="sym-name">BAJFINANCE</div>
+                        <div class="sym-exch">NSE • EQUITY</div>
+                    </div>
+                    <div>
+                        <div class="sym-price">6,890.50</div>
+                        <div class="sym-chg up">+2.40%</div>
+                    </div>
+                </div>
+
+                <div class="watch-item" data-search="tatamotors tata motors nse" onclick="selectStock('TATAMOTORS', '₹1,085.60', '+2.25%')">
+                    <div>
+                        <div class="sym-name">TATAMOTORS</div>
+                        <div class="sym-exch">NSE • EQUITY</div>
+                    </div>
+                    <div>
+                        <div class="sym-price">1,085.60</div>
+                        <div class="sym-chg up">+2.25%</div>
+                    </div>
+                </div>
+
+                <div class="watch-item" data-search="adanient adani enterprises nse" onclick="selectStock('ADANIENT', '₹3,180.00', '+2.80%')">
+                    <div>
+                        <div class="sym-name">ADANIENT</div>
+                        <div class="sym-exch">NSE • EQUITY</div>
+                    </div>
+                    <div>
+                        <div class="sym-price">3,180.00</div>
+                        <div class="sym-chg up">+2.80%</div>
+                    </div>
+                </div>
+
+                <div class="section-header-tag">🌐 Global Leaders</div>
+
+                <div class="watch-item" data-search="tsla tesla inc nasdaq" onclick="selectStock('TSLA', '$248.50', '+3.20%')">
                     <div>
                         <div class="sym-name">TSLA</div>
                         <div class="sym-exch">NASDAQ • ALPACA</div>
@@ -201,14 +370,15 @@
                         <div class="sym-chg up">+3.20%</div>
                     </div>
                 </div>
-                <div class="watch-item" onclick="selectStock('AAPL', '$224.30', '+0.45%')">
+
+                <div class="watch-item" data-search="nvda nvidia corp nasdaq" onclick="selectStock('NVDA', '$128.40', '+4.15%')">
                     <div>
-                        <div class="sym-name">AAPL</div>
+                        <div class="sym-name">NVDA</div>
                         <div class="sym-exch">NASDAQ • ALPACA</div>
                     </div>
                     <div>
-                        <div class="sym-price">224.30</div>
-                        <div class="sym-chg up">+0.45%</div>
+                        <div class="sym-price">128.40</div>
+                        <div class="sym-chg up">+4.15%</div>
                     </div>
                 </div>
             </div>
@@ -217,7 +387,7 @@
         <main class="workspace">
             <div class="ai-prompt-bar">
                 <span style="font-size:1.2rem;">⚡</span>
-                <input type="text" id="aiQuery" placeholder="Ask AI in plain English: 'What is my portfolio Sharpe ratio?', 'Match pending Ramp invoices', or 'Run Alpaca algo buy order'..." onkeydown="if(event.key==='Enter')runAIQuery()">
+                <input type="text" id="aiQuery" placeholder="Ask AI in plain English: 'What is NIFTY 50 Sharpe ratio?', 'Match pending Ramp invoices', or 'Run Alpaca algo buy order'..." onkeydown="if(event.key==='Enter')runAIQuery()">
                 <button class="btn-action btn-zerodha" onclick="runAIQuery()">Ask Zerodha AI</button>
             </div>
 
@@ -226,8 +396,8 @@
                 <div class="card-row">
                     <div class="stat-card">
                         <div class="stat-title">Selected Instrument</div>
-                        <div class="stat-val" id="kiteSym">RELIANCE</div>
-                        <div class="stat-sub" id="kitePrice">₹2,980.50 (+1.40%)</div>
+                        <div class="stat-val" id="kiteSym">NIFTY 50</div>
+                        <div class="stat-sub" id="kitePrice">24,320.50 (+0.85%)</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-title">Alpaca Execution Engine</div>
@@ -244,7 +414,7 @@
                 <div class="panel-box">
                     <div class="panel-header">
                         <div class="panel-title">
-                            📈 Order Execution & Market Depth (Alpaca + Kite API)
+                            📈 Order Execution & Market Depth (Alpaca + Zerodha Kite API)
                         </div>
                         <div>
                             <button class="btn-action btn-buy" onclick="placeOrder('BUY')">B BUY (Market)</button>
@@ -263,20 +433,20 @@
                         <tbody>
                             <tr>
                                 <td class="up">1,450</td>
-                                <td class="up">2,980.50</td>
-                                <td class="down">2,980.85</td>
+                                <td class="up">24,320.00</td>
+                                <td class="down">24,321.00</td>
                                 <td class="down">820</td>
                             </tr>
                             <tr>
                                 <td class="up">3,120</td>
-                                <td class="up">2,980.00</td>
-                                <td class="down">2,981.00</td>
+                                <td class="up">24,319.50</td>
+                                <td class="down">24,321.50</td>
                                 <td class="down">1,940</td>
                             </tr>
                             <tr>
                                 <td class="up">5,800</td>
-                                <td class="up">2,979.50</td>
-                                <td class="down">2,981.50</td>
+                                <td class="up">24,319.00</td>
+                                <td class="down">24,322.00</td>
                                 <td class="down">4,110</td>
                             </tr>
                         </tbody>
@@ -355,11 +525,11 @@
                     </div>
                     <div class="audit-log" id="auditLog">
                         <div class="log-entry">
-                            <span>[2026-08-12 21:45:02] MCP_TOOL: `get_portfolio_sharpe_ratio` executed</span>
+                            <span>[2026-08-12 22:10:02] MCP_TOOL: `get_portfolio_sharpe_ratio` executed</span>
                             <span class="up">HASH: 0x8f2a...c914 (VERIFIED)</span>
                         </div>
                         <div class="log-entry">
-                            <span>[2026-08-12 21:44:18] MCP_TOOL: `ramp_match_invoices` executed</span>
+                            <span>[2026-08-12 22:09:18] MCP_TOOL: `ramp_match_invoices` executed</span>
                             <span class="up">HASH: 0x3d9e...110b (VERIFIED)</span>
                         </div>
                     </div>
@@ -369,6 +539,19 @@
     </div>
 
     <script>
+        function filterWatchlist() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const items = document.querySelectorAll('.watch-item');
+            items.forEach(item => {
+                const text = (item.getAttribute('data-search') || '' ) + ' ' + item.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
         function switchTab(name) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.module-panel').forEach(p => p.classList.remove('active'));
@@ -394,7 +577,7 @@
             const q = document.getElementById('aiQuery').value.trim();
             if (!q) return;
 
-            alert(`⚡ Zerodha FreeLLMAPI AI Response for: "${q}"\n\nResult: Sharpe Ratio: 2.14, Diversification: 88/100, Invoices Matched: 99.4%. Executed in 32ms with FINBOURNE cryptographic signature.`);
+            alert(`⚡ Zerodha FreeLLMAPI AI Response for: "${q}"\n\nResult: NIFTY 50 Sharpe Ratio: 2.14, Diversification: 88/100, Invoices Matched: 99.4%. Executed in 32ms with FINBOURNE cryptographic signature.`);
         }
     </script>
 </body>

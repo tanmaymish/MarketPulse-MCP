@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MarketPulse MCP — 6-Agent AI Stock Debate (Zerodha Suite)</title>
-    <meta name="description" content="Institutional 6-agent AI debate terminal for stock analysis powered by FreeLLMAPI. Built by Tanmay Mishra.">
+    <title>MarketPulse MCP — 6-Agent AI Stock & Index Debate (Zerodha Suite)</title>
+    <meta name="description" content="Institutional 6-agent AI debate terminal for Indian stocks & indices powered by FreeLLMAPI. Built by Tanmay Mishra.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -52,7 +52,7 @@
 
         /* LEFT SIDEBAR CONTROLS */
         .control-panel {
-            width: 340px; background: var(--bg-card); border-right: 1px solid var(--border-zerodha);
+            width: 360px; background: var(--bg-card); border-right: 1px solid var(--border-zerodha);
             padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; flex-shrink: 0; overflow-y: auto;
         }
         .panel-title { font-size: 1.1rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem; }
@@ -124,22 +124,69 @@
     <div class="app-container">
         <aside class="control-panel">
             <div class="panel-title">
-                ⚡ 6-Agent Debate Config
+                ⚡ 6-Agent AI Debate Config
             </div>
 
             <div class="field-group">
-                <label class="field-label">Target Symbol</label>
-                <select id="symSelect">
-                    <option value="RELIANCE">RELIANCE (Reliance Industries)</option>
-                    <option value="TSLA">TSLA (Tesla Inc.)</option>
-                    <option value="NVDA">NVDA (NVIDIA Corp.)</option>
-                    <option value="TCS">TCS (Tata Consultancy)</option>
-                    <option value="HDFCBANK">HDFCBANK (HDFC Bank)</option>
+                <label class="field-label">🔍 Live Search Instrument</label>
+                <input type="text" id="liveSearchInput" placeholder="Search (e.g. NIFTY, RELIANCE, TCS...)" oninput="filterDropdownOptions()">
+            </div>
+
+            <div class="field-group">
+                <label class="field-label">Target Instrument (Indian Indices & Stocks)</label>
+                <select id="symSelect" onchange="updateStockHeader()">
+                    <optgroup label="🇮🇳 Indian Major Indices">
+                        <option value="NIFTY50" data-price="24,320.50" data-chg="+0.85%">NIFTY 50 (Benchmark Index)</option>
+                        <option value="BANKNIFTY" data-price="52,140.80" data-chg="+1.12%">NIFTY BANK (Banking Sector)</option>
+                        <option value="NIFTYIT" data-price="41,850.20" data-chg="-0.42%">NIFTY IT (Tech Sector)</option>
+                        <option value="FINNIFTY" data-price="23,980.10" data-chg="+0.95%">NIFTY FINANCIAL SERVICES</option>
+                        <option value="NIFTYMIDCAP" data-price="58,420.30" data-chg="+1.45%">NIFTY MIDCAP 100</option>
+                        <option value="SENSEX" data-price="79,890.60" data-chg="+0.78%">BSE SENSEX (30 Bluechip)</option>
+                        <option value="NIFTYAUTO" data-price="25,310.00" data-chg="+1.80%">NIFTY AUTO (Automotive)</option>
+                        <option value="NIFTYPHARMA" data-price="22,640.40" data-chg="+0.65%">NIFTY PHARMA (Healthcare)</option>
+                        <option value="NIFTYMETAL" data-price="9,420.70" data-chg="+2.30%">NIFTY METAL (Metals & Mining)</option>
+                        <option value="NIFTYENERGY" data-price="40,150.80" data-chg="+1.25%">NIFTY ENERGY (Oil & Power)</option>
+                    </optgroup>
+
+                    <optgroup label="🇮🇳 Top High-Value Indian Stocks (NSE/BSE)">
+                        <option value="RELIANCE" data-price="₹2,980.50" data-chg="+1.40%">RELIANCE (Reliance Industries)</option>
+                        <option value="TCS" data-price="₹4,210.00" data-chg="-0.35%">TCS (Tata Consultancy)</option>
+                        <option value="HDFCBANK" data-price="₹1,645.20" data-chg="+0.95%">HDFCBANK (HDFC Bank)</option>
+                        <option value="ICICIBANK" data-price="₹1,215.40" data-chg="+1.60%">ICICIBANK (ICICI Bank)</option>
+                        <option value="INFY" data-price="₹1,890.10" data-chg="-0.80%">INFY (Infosys Ltd)</option>
+                        <option value="BHARTIARTL" data-price="₹1,560.80" data-chg="+2.10%">BHARTIARTL (Bharti Airtel)</option>
+                        <option value="ITC" data-price="₹495.20" data-chg="+0.40%">ITC (ITC Ltd)</option>
+                        <option value="SBIN" data-price="₹845.60" data-chg="+1.25%">SBIN (State Bank of India)</option>
+                        <option value="LT" data-price="₹3,680.00" data-chg="+1.75%">LT (Larsen & Toubro)</option>
+                        <option value="HINDUNILVR" data-price="₹2,740.30" data-chg="-0.20%">HINDUNILVR (Hindustan Unilever)</option>
+                        <option value="BAJFINANCE" data-price="₹6,890.50" data-chg="+2.40%">BAJFINANCE (Bajaj Finance)</option>
+                        <option value="MARUTI" data-price="₹12,450.00" data-chg="+1.15%">MARUTI (Maruti Suzuki)</option>
+                        <option value="SUNPHARMA" data-price="₹1,780.20" data-chg="+0.85%">SUNPHARMA (Sun Pharma)</option>
+                        <option value="TATASTEEL" data-price="₹165.40" data-chg="+3.10%">TATASTEEL (Tata Steel)</option>
+                        <option value="TATAMOTORS" data-price="₹1,085.60" data-chg="+2.25%">TATAMOTORS (Tata Motors)</option>
+                        <option value="ADANIENT" data-price="₹3,180.00" data-chg="+2.80%">ADANIENT (Adani Enterprises)</option>
+                        <option value="NTPC" data-price="₹412.30" data-chg="+1.40%">NTPC (NTPC Ltd)</option>
+                        <option value="POWERGRID" data-price="₹345.80" data-chg="+0.90%">POWERGRID (Power Grid)</option>
+                        <option value="KOTAKBANK" data-price="₹1,790.00" data-chg="+0.60%">KOTAKBANK (Kotak Mahindra Bank)</option>
+                        <option value="AXISBANK" data-price="₹1,185.50" data-chg="+1.30%">AXISBANK (Axis Bank)</option>
+                        <option value="WIPRO" data-price="₹535.20" data-chg="-0.50%">WIPRO (Wipro Ltd)</option>
+                        <option value="TITAN" data-price="₹3,460.00" data-chg="+1.10%">TITAN (Titan Company)</option>
+                        <option value="HCLTECH" data-price="₹1,745.00" data-chg="-0.40%">HCLTECH (HCL Technologies)</option>
+                        <option value="ASIANPAINT" data-price="₹2,980.00" data-chg="-0.75%">ASIANPAINT (Asian Paints)</option>
+                        <option value="ULTRACHEMCO" data-price="₹11,250.00" data-chg="+1.05%">ULTRACHEMCO (UltraTech Cement)</option>
+                        <option value="M&M" data-price="₹2,890.00" data-chg="+2.60%">M&M (Mahindra & Mahindra)</option>
+                    </optgroup>
+
+                    <optgroup label="🌐 Global Leaders">
+                        <option value="TSLA" data-price="$248.50" data-chg="+3.20%">TSLA (Tesla Inc.)</option>
+                        <option value="NVDA" data-price="$128.40" data-chg="+4.15%">NVDA (NVIDIA Corp.)</option>
+                        <option value="AAPL" data-price="$224.30" data-chg="+0.45%">AAPL (Apple Inc.)</option>
+                    </optgroup>
                 </select>
             </div>
 
             <div class="field-group">
-                <label class="field-label">LLM Provider (FreeLLMAPI)</label>
+                <label class="field-label">LLM Provider (FreeLLMAPI Routing)</label>
                 <select id="providerSelect">
                     <option value="groq-llama3">Meta Llama 3.3 70B (Primary)</option>
                     <option value="gemini-flash">Google Gemini 1.5 Flash</option>
@@ -152,7 +199,7 @@
             </button>
 
             <div class="field-group">
-                <label class="field-label">Active AI Agents</label>
+                <label class="field-label">Active AI Debate Agents</label>
                 <div class="agent-list">
                     <div class="agent-badge">
                         <span>📈 Fundamental Bull</span>
@@ -185,8 +232,8 @@
         <main class="debate-workspace">
             <div class="workspace-header">
                 <div class="stock-info">
-                    <span class="stock-symbol" id="targetSym">RELIANCE</span>
-                    <span class="stock-price" id="targetPrice">₹2,980.50 (+1.40%)</span>
+                    <span class="stock-symbol" id="targetSym">NIFTY50</span>
+                    <span class="stock-price" id="targetPrice">24,320.50 (+0.85%)</span>
                 </div>
                 <span class="tag-kite">Zerodha Kite / FreeLLMAPI Live</span>
             </div>
@@ -198,17 +245,17 @@
                         <span class="stance-tag stance-bull">BULLISH (+15% Target)</span>
                     </div>
                     <div class="message-text">
-                        Strong growth trajectory in digital services and retail expansion. Free cash flow conversion remains solid with expected margin expansion in H2 FY26.
+                        NIFTY 50 displays robust macroeconomic fundamentals with strong DII net inflows of ₹4,850 Cr. Sector leadership led by Banking & Auto. Expected rally towards 24,800.
                     </div>
                 </div>
 
                 <div class="message-card">
                     <div class="message-header">
                         <span class="agent-name">📉 Valuation Bear Agent</span>
-                        <span class="stance-tag stance-bear">BEARISH (Risk Alert)</span>
+                        <span class="stance-tag stance-bear">BEARISH (Overbought Caution)</span>
                     </div>
                     <div class="message-text">
-                        Current P/E multiple trades at a 14% premium to historical 5-year averages. Debt-to-equity ratio requires close monitoring as capex deployment slows.
+                        12-month forward NIFTY P/E trades at 22.8x (above 10-year mean of 20.2x). FII net selling in IT sector suggests potential consolidation around 24,100 support.
                     </div>
                 </div>
             </div>
@@ -216,19 +263,57 @@
     </div>
 
     <script>
+        function filterDropdownOptions() {
+            const q = document.getElementById('liveSearchInput').value.toLowerCase().trim();
+            const select = document.getElementById('symSelect');
+            const options = select.getElementsByTagName('option');
+            let firstMatch = null;
+
+            for (let i = 0; i < options.length; i++) {
+                const opt = options[i];
+                const text = opt.textContent.toLowerCase() + ' ' + opt.value.toLowerCase();
+                if (text.includes(q)) {
+                    opt.style.display = '';
+                    if (!firstMatch) firstMatch = opt;
+                } else {
+                    opt.style.display = 'none';
+                }
+            }
+            if (firstMatch && q.length > 0) {
+                select.value = firstMatch.value;
+                updateStockHeader();
+            }
+        }
+
+        function updateStockHeader() {
+            const sel = document.getElementById('symSelect');
+            const opt = sel.options[sel.selectedIndex];
+            const price = opt.getAttribute('data-price') || '';
+            const chg = opt.getAttribute('data-chg') || '';
+
+            document.getElementById('targetSym').textContent = sel.value;
+            document.getElementById('targetPrice').textContent = `${price} (${chg})`;
+        }
+
         function runDebate() {
-            const sym = document.getElementById('symSelect').value;
+            const sel = document.getElementById('symSelect');
+            const sym = sel.value;
+            const opt = sel.options[sel.selectedIndex];
+            const price = opt.getAttribute('data-price') || '';
+            const chg = opt.getAttribute('data-chg') || '';
+
             document.getElementById('targetSym').textContent = sym;
+            document.getElementById('targetPrice').textContent = `${price} (${chg})`;
 
             const feed = document.getElementById('chatFeed');
             feed.innerHTML = `
                 <div class="message-card">
                     <div class="message-header">
-                        <span class="agent-name">⚡ FreeLLMAPI Routing Engine</span>
-                        <span class="stance-tag stance-neutral">PROCESSING LLM FALLBACK</span>
+                        <span class="agent-name">⚡ FreeLLMAPI Multi-Provider Routing Engine</span>
+                        <span class="stance-tag stance-neutral">PROCESSING AI debate FOR ${sym}</span>
                     </div>
                     <div class="message-text">
-                        Fetching multi-provider institutional signals for ${sym} across Llama 3.3 70B & Gemini 1.5 Flash...
+                        Fetching institutional market signals for ${sym} across Llama 3.3 70B & Gemini 1.5 Flash...
                     </div>
                 </div>
             `;
@@ -241,21 +326,23 @@
                             <span class="stance-tag stance-bull">ACCUMULATION ZONE</span>
                         </div>
                         <div class="message-text">
-                            ${sym} RSI(14) stands at 54.2 with Golden Cross formation on 50-day EMA. Order book shows strong institutional bid wall.
+                            ${sym} currently at ${price} (${chg}). Technical indicators show RSI(14) at 56.4 with strong order book volume and 20-day EMA support.
                         </div>
                     </div>
                     <div class="message-card">
                         <div class="message-header">
-                            <span class="agent-name">🏛️ FINBOURNE Audit Agent</span>
+                            <span class="agent-name">🏛️ FINBOURNE Cryptographic Audit</span>
                             <span class="stance-tag stance-neutral">VERIFIED HASH</span>
                         </div>
                         <div class="message-text">
-                            Cryptographic verification: Hash 0x9f1a...c814 successfully anchored into institutional audit log.
+                            Institutional audit signature: Hash 0x9f1a...c814 successfully anchored to audit log for ${sym} execution.
                         </div>
                     </div>
                 `;
             }, 800);
         }
+
+        updateStockHeader();
     </script>
 </body>
 </html>
