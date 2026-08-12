@@ -4,6 +4,7 @@ AGM briefing, insider signal, Telegram tracker, budget analyzer.
 """
 
 import json
+
 from mcp.server.fastmcp import FastMCP
 
 

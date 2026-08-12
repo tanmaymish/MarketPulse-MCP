@@ -7,9 +7,9 @@ Tells you what % of stocks are shared between two or more funds.
 "Your HDFC Flexi Cap + Mirae Large Cap have 68% overlap — you're not diversified"
 """
 
+import json
 import logging
 import urllib.request
-import json
 from datetime import datetime, timezone
 
 logger = logging.getLogger("finstack.mf_overlap")

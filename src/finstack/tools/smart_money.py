@@ -1,6 +1,7 @@
 """MCP tool: Smart money / unusual activity detector."""
 
 import json
+
 from mcp.server.fastmcp import FastMCP
 
 

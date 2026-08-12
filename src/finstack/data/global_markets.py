@@ -15,12 +15,16 @@ from datetime import datetime
 import httpx
 import yfinance as yf
 
-from finstack.utils.cache import cached, quotes_cache, fundamentals_cache, historical_cache
-from finstack.utils.helpers import (
-    validate_symbol, validate_period, validate_interval,
-    clean_nan, safe_get, format_market_cap,
-)
 from finstack.config import config
+from finstack.utils.cache import cached, fundamentals_cache, historical_cache, quotes_cache
+from finstack.utils.helpers import (
+    clean_nan,
+    format_market_cap,
+    safe_get,
+    validate_interval,
+    validate_period,
+    validate_symbol,
+)
 
 logger = logging.getLogger("finstack.data.global")
 
@@ -86,7 +90,7 @@ def get_global_quote(symbol: str) -> dict:
 
     except Exception as e:
         logger.error(f"Error fetching global quote for {symbol}: {e}")
-        return {"error": True, "message": f"Failed to fetch '{symbol}': {str(e)}"}
+        return {"error": True, "message": f"Failed to fetch '{symbol}': {e!s}"}
 
 
 @cached(historical_cache, ttl=86400)

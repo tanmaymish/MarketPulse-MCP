@@ -1,6 +1,7 @@
 """MCP tool: India social sentiment analyzer."""
 
 import json
+
 from mcp.server.fastmcp import FastMCP
 
 

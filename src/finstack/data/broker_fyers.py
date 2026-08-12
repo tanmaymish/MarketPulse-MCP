@@ -10,8 +10,8 @@ Setup:
 
 Get credentials: https://myapi.fyers.in/
 """
-import os
 import logging
+import os
 from datetime import datetime, timedelta
 
 logger = logging.getLogger("finstack.fyers")

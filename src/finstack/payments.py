@@ -12,13 +12,13 @@ This module is only needed for the hosted version (Week 5+).
 Local stdio mode doesn't use this.
 """
 
-import os
-import json
-import hmac
 import hashlib
+import hmac
+import json
+import logging
+import os
 import secrets
 import sqlite3
-import logging
 from datetime import datetime, timedelta
 
 from finstack.config import UserTier

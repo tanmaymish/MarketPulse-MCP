@@ -21,8 +21,8 @@ Setup:
 Without setup: returns known channel database with historical scoring.
 """
 
-import os
 import logging
+import os
 from datetime import datetime, timezone
 
 logger = logging.getLogger("finstack.telegram")

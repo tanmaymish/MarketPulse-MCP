@@ -182,8 +182,8 @@ def _algo_trader_analysis(symbol: str) -> dict:
 
 def _value_investor_analysis(symbol: str) -> dict:
     """Fundamental ratios + credit rating analysis."""
-    from finstack.data.fundamentals import get_key_ratios
     from finstack.data.credit_esg import get_credit_ratings
+    from finstack.data.fundamentals import get_key_ratios
 
     ratios  = _safe(get_key_ratios, f"{symbol}.NS")
     credit  = _safe(get_credit_ratings, symbol)
@@ -261,8 +261,8 @@ def _value_investor_analysis(symbol: str) -> dict:
 
 def _retail_pulse_analysis(symbol: str) -> dict:
     """News tone + 52W position + VIX sentiment."""
-    from finstack.data.market_intelligence import get_india_vix
     from finstack.data.global_markets import get_market_news
+    from finstack.data.market_intelligence import get_india_vix
 
     vix_data  = _safe(get_india_vix)
     news_data = _safe(get_market_news, symbol, max_results=10)
@@ -342,12 +342,12 @@ def _retail_pulse_analysis(symbol: str) -> dict:
 
 # ── Agent 5: Macro Analyst ────────────────────────────────────────────────────
 
-def _macro_analyst_analysis(symbol: str) -> dict:  # noqa: ARG001
+def _macro_analyst_analysis(symbol: str) -> dict:
     """Macro environment: RBI rates, CPI inflation, G-Sec yield curve."""
     from finstack.data.market_intelligence import (
-        get_rbi_policy_rates,
-        get_india_macro_indicators,
         get_india_gsec_yields,
+        get_india_macro_indicators,
+        get_rbi_policy_rates,
     )
 
     rbi_data   = _safe(get_rbi_policy_rates)

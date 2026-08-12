@@ -11,10 +11,11 @@ In local stdio mode, rate limiting is disabled (you're the only user).
 In hosted HTTP mode, rate limits are enforced per API key.
 """
 
-import time
 import logging
+import time
 from collections import defaultdict
-from finstack.config import UserTier, TIER_RATE_LIMITS
+
+from finstack.config import TIER_RATE_LIMITS, UserTier
 
 logger = logging.getLogger("finstack.ratelimit")
 

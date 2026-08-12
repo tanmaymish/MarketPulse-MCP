@@ -10,9 +10,9 @@ related-party transactions, buyback cancellations.
 Data: NSE corporate announcements (public, free)
 """
 
+import json
 import logging
 import urllib.request
-import json
 from datetime import datetime, timezone
 
 logger = logging.getLogger("finstack.agm")

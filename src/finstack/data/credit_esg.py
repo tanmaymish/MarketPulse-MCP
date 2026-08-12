@@ -13,7 +13,7 @@ from datetime import datetime
 
 import httpx
 
-from finstack.utils.cache import cached, general_cache, fundamentals_cache
+from finstack.utils.cache import cached, fundamentals_cache, general_cache
 from finstack.utils.helpers import clean_nan, validate_symbol
 
 logger = logging.getLogger("finstack.data.credit_esg")

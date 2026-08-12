@@ -24,7 +24,7 @@ Outcome labels:
 import json
 import logging
 import sqlite3
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 logger = logging.getLogger("finstack.signal_tracker")

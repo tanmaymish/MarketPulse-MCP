@@ -11,13 +11,14 @@ Week 2 tools (6):
 """
 
 import json
+
 from finstack.data.fundamentals import (
-    get_income_statement,
     get_balance_sheet,
     get_cash_flow,
-    get_key_ratios,
     get_company_profile,
     get_dividend_history,
+    get_income_statement,
+    get_key_ratios,
 )
 
 

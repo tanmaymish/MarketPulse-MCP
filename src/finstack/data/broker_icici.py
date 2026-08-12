@@ -11,8 +11,8 @@ Setup:
 Get credentials: https://api.icicidirect.com/
 Session token: Login to ICICIdirect app → My Account → Generate API Session
 """
-import os
 import logging
+import os
 from datetime import datetime, timedelta
 
 logger = logging.getLogger("finstack.icici")

@@ -4,8 +4,8 @@ FinStack Helpers
 Common utilities: symbol validation, response formatting, error handling.
 """
 
-import re
 import logging
+import re
 from typing import Any
 
 logger = logging.getLogger("finstack.helpers")

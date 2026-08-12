@@ -19,28 +19,27 @@ Week 3 tools (15):
 """
 
 import json
-from finstack.config import config
-from finstack.utils.helpers import tier_locked_error
 
+from finstack.config import config
 from finstack.data.analytics import (
-    compute_technical_indicators,
-    compute_support_resistance,
-    screen_stocks,
-    compare_stocks,
-    get_sector_performance,
     analyze_portfolio,
     backtest_sma_crossover,
+    compare_stocks,
+    compute_support_resistance,
+    compute_technical_indicators,
+    get_sector_performance,
+    screen_stocks,
 )
-
 from finstack.data.nse_advanced import (
-    get_options_chain,
-    get_fii_dii_data,
     get_bulk_deals,
     get_corporate_actions,
-    get_quarterly_results,
     get_earnings_calendar,
+    get_fii_dii_data,
     get_ipo_calendar,
+    get_options_chain,
+    get_quarterly_results,
 )
+from finstack.utils.helpers import tier_locked_error
 
 
 def register_analytics_tools(mcp):
@@ -333,7 +332,7 @@ def register_analytics_tools(mcp):
         except json.JSONDecodeError as e:
             return json.dumps({
                 "error": True,
-                "message": f"Invalid JSON: {str(e)}",
+                "message": f"Invalid JSON: {e!s}",
                 "example": '[{"symbol":"RELIANCE","quantity":10,"buy_price":2500}]'
             }, indent=2)
 

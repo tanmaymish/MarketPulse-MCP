@@ -19,7 +19,11 @@ import pandas as pd
 import yfinance as yf
 
 from finstack.data.agents import get_stock_brief
-from finstack.data.analytics import compare_stocks, compute_technical_indicators, get_sector_performance
+from finstack.data.analytics import (
+    compare_stocks,
+    compute_technical_indicators,
+    get_sector_performance,
+)
 from finstack.data.earnings import predict_earnings
 from finstack.data.fundamentals import get_key_ratios
 from finstack.data.global_markets import get_market_news
@@ -29,7 +33,7 @@ from finstack.data.nse_advanced import get_bulk_deals, get_quarterly_results
 from finstack.data.promoter_watch import get_pledge_alert
 from finstack.data.sentiment import get_social_sentiment
 from finstack.data.smart_money import detect_unusual_activity
-from finstack.utils.cache import general_cache, cached
+from finstack.utils.cache import cached, general_cache
 from finstack.utils.helpers import clean_nan, to_nse_symbol, validate_symbol
 
 logger = logging.getLogger("finstack.data.research")

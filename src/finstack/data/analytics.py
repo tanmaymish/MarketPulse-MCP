@@ -8,12 +8,16 @@ All computed locally using pandas + numpy — zero API cost.
 import logging
 from datetime import datetime
 
-import yfinance as yf
 import pandas as pd
+import yfinance as yf
 
-from finstack.utils.cache import cached, historical_cache, general_cache
+from finstack.utils.cache import cached, general_cache, historical_cache
 from finstack.utils.helpers import (
-    validate_symbol, to_nse_symbol, clean_nan, safe_get, format_market_cap,
+    clean_nan,
+    format_market_cap,
+    safe_get,
+    to_nse_symbol,
+    validate_symbol,
 )
 
 logger = logging.getLogger("finstack.data.analytics")

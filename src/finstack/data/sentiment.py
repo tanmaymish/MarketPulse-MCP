@@ -13,9 +13,9 @@ Setup (Reddit only — StockTwits + ET work with zero setup):
     (Create free script app at https://www.reddit.com/prefs/apps)
 """
 
+import logging
 import os
 import re
-import logging
 from datetime import datetime, timezone
 
 logger = logging.getLogger("finstack.sentiment")
@@ -75,8 +75,8 @@ def _fetch_stocktwits(symbol: str, limit: int = 50) -> list[dict]:
     """
     posts = []
     try:
-        import urllib.request
         import json as _json
+        import urllib.request
 
         url = f"https://api.stocktwits.com/api/2/streams/symbol/{symbol}.json"
         req = urllib.request.Request(url, headers={"User-Agent": "finstack-mcp/1.0"})

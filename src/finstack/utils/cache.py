@@ -8,12 +8,12 @@ Different TTLs for different data types:
   - Historical: 24 hours (past data doesn't change)
 """
 
-import time
 import hashlib
 import json
 import logging
-from typing import Any
+import time
 from functools import wraps
+from typing import Any
 
 logger = logging.getLogger("finstack.cache")
 

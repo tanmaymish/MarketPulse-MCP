@@ -1,6 +1,7 @@
 """MCP tool: Nifty direction probability score."""
 
 import json
+
 from mcp.server.fastmcp import FastMCP
 
 

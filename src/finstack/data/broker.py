@@ -23,10 +23,9 @@ With them, you get real-time NSE/BSE data via Angel One SmartAPI.
 Angel One SmartAPI docs: https://smartapi.angelbroking.com/
 """
 
-import os
 import logging
+import os
 from datetime import datetime
-from typing import Optional
 
 import httpx
 
@@ -80,7 +79,7 @@ def _is_configured() -> bool:
     ])
 
 
-def _get_totp() -> Optional[str]:
+def _get_totp() -> str | None:
     """Generate TOTP from secret if pyotp is available."""
     secret = os.getenv("ANGEL_TOTP_SECRET")
     if not secret:
@@ -96,7 +95,7 @@ def _get_totp() -> Optional[str]:
 _session_cache: dict = {}
 
 
-def _get_session() -> Optional[dict]:
+def _get_session() -> dict | None:
     """Authenticate with Angel One SmartAPI and return session tokens."""
     global _session_cache
 

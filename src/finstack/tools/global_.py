@@ -13,12 +13,13 @@ Week 2 tools (8):
 """
 
 import json
+
 from finstack.data.global_markets import (
-    get_global_quote,
-    get_global_historical,
-    get_crypto_price,
     get_crypto_historical,
+    get_crypto_price,
     get_forex_rate,
+    get_global_historical,
+    get_global_quote,
     get_market_news,
     get_sec_filings,
 )

@@ -8,9 +8,9 @@ Uses NSE insider trading data (SAST disclosures, public quarterly).
 Data: NSE SAST filings (free, public)
 """
 
+import json
 import logging
 import urllib.request
-import json
 from datetime import datetime, timezone
 
 logger = logging.getLogger("finstack.insider")
