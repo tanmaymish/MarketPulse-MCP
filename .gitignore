@@ -1,0 +1,52 @@
+# Python
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Environment
+.env
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tmp/
+pytest-cache-files-*/
+
+# Logs
+*.log
+
+# Local DB (payments)
+*.db
+*.sqlite
+
+# Secrets
+*.pem
+*.key
+.mcpregistry_*
+mcp-publisher.exe
+
+# Private roadmap / local dev scripts
+../FINSTACK_IMPLEMENTATION.md
+../VIRAL_GROWTH_PLAYBOOK.md
+../CLAUDE.md
+verify_fix.py
+*.tmp.py

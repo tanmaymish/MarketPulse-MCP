@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tanmay Mishra · marketpulse-mcp Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+  <!-- CDN libs -->
+  <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+
+  <!-- UPGRADE MODAL -->
+  <div id="upgrade-modal">
+    <div class="modal-backdrop" onclick="closeUpgradeModal()"></div>
+    <div class="modal-box">
+      <div class="modal-header">
+        <span>Tanmay Mishra · Dashboard Pro</span>
+        <button onclick="closeUpgradeModal()">×</button>
+      </div>
+      <div class="modal-price">
+        <span class="big-price">₹299</span><span class="price-period">/month</span>
+      </div>
+      <div class="modal-sub">vs Bloomberg $31,980/yr — you do the math</div>
+      <ul class="modal-features">
+        <li>✓ Portfolio tracker + XIRR calculator</li>
+        <li>✓ Price alerts (email + Telegram)</li>
+        <li>✓ All drawing tools (Fib, channels, patterns)</li>
+        <li>✓ Data export (CSV/Excel)</li>
+        <li>✓ 30m and 4H chart timeframes</li>
+        <li>✓ Real-time Angel One integration</li>
+        <li>✓ Daily market brief at 8:15 AM</li>
+      </ul>
+      <button class="modal-pay-btn" onclick="simulatePayment()">Pay ₹299 with Razorpay →</button>
+      <div class="modal-note">Payments via Razorpay · Cancel anytime · 7-day refund</div>
+      <button class="modal-trial-btn" onclick="startTrial()">Try free for 7 days (no card needed)</button>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <div id="nav">
+    <div class="nav-brand">
+      <div class="dot"></div>
+      <span>Tanmay Mishra</span>
+      <span style="color:var(--muted2);font-weight:400;">·</span>
+      <span style="color:var(--muted);font-weight:400;font-size:12px;">marketpulse-mcp</span>
+    </div>
+
+    <div class="nav-sep"></div>
+
+    <div class="nav-indices">
+      <div class="nav-index" id="nav-nifty">
+        <span class="label">NIFTY 50</span>
+        <span class="val price-pulse" id="nav-nifty-val">24,812.45</span>
+        <span class="chg green" id="nav-nifty-chg">+0.88%</span>
+      </div>
+      <div class="nav-sep"></div>
+      <div class="nav-index" id="nav-banknifty">
+        <span class="label">BANKNIFTY</span>
+        <span class="val price-pulse" id="nav-bank-val">52,341.20</span>
+        <span class="chg green" id="nav-bank-chg">+1.23%</span>
+      </div>
+      <div class="nav-sep"></div>
+      <div class="nav-index" id="nav-vix">
+        <span class="label">INDIA VIX</span>
+        <span class="val" id="nav-vix-val">14.2</span>
+        <span class="chg green" id="nav-vix-chg">↓ Calm</span>
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <div class="market-status" id="market-status">
+        <div class="status-dot" id="status-dot"></div>
+        <span id="status-text"></span>
+      </div>
+      <div class="nav-sep"></div>
+      <button id="theme-toggle" onclick="toggleTheme()" title="Toggle dark/light theme"
+        style="background:none;border:1px solid var(--border2);color:var(--muted);border-radius:4px;padding:3px 8px;cursor:pointer;font-size:11px;display:flex;align-items:center;gap:5px;transition:all 0.15s;">
+        <svg id="theme-icon" width="11" height="11" viewBox="0 0 11 11" fill="none">
+          <circle cx="5.5" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.3" />
+          <line x1="5.5" y1="0" x2="5.5" y2="2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+          <line x1="5.5" y1="9" x2="5.5" y2="11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+          <line x1="0" y1="5.5" x2="2" y2="5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+          <line x1="9" y1="5.5" x2="11" y2="5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+        </svg>
+        <span id="theme-label">Light</span>
+      </button>
+      <div class="nav-badge" id="nav-version">v0.6.1 · 58 tools</div>
+      <button id="nav-pro-badge" onclick="openUpgradeModal()">Upgrade</button>
+    </div>
+  </div>
+
+  <!-- DATA DELAY WARNING -->
+  <div id="delay-banner">
+    <span>⚠</span>
+    <span>Chart data is <strong>15 minutes delayed</strong>. Do not use for intraday trading. <a href="#"
+        onclick="document.getElementById('delay-banner').style.display='none'">Configure Angel One for real-time
+        →</a></span>
+    <button onclick="document.getElementById('delay-banner').style.display='none'">×</button>
+  </div>
+
+  <!-- APP -->
+  <div id="app">
+    <div id="main-row">
+
+      <!-- WATCHLIST -->
+      <div id="watchlist">
+        <div class="watchlist-header">Watchlist</div>
+        <div class="watchlist-search">
+          <input type="text" placeholder="Search symbol..." id="wl-search" />
+        </div>
+        <div class="watchlist-list" id="wl-list"></div>
+        <div class="watchlist-add">
+          <span class="plus">+</span>
+          <span>Add Symbol</span>
+        </div>
+      </div>
+
+      <!-- DRAWING TOOLBAR -->
+      <div id="draw-toolbar">
+        <div class="draw-tool active" id="dt-cursor" data-tool="cursor">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M2 2l9 4.5-4.5 1.5L5 12 2 2z" fill="currentColor" />
+          </svg>
+          <span class="dt-label">Cursor</span>
+          <span class="dt-tip">Select / Cursor mode</span>
+        </div>
+        <div class="draw-tool" id="dt-hline" data-tool="hline">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <line x1="1" y1="7" x2="13" y2="7" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2,2" />
+            <circle cx="7" cy="7" r="1.5" fill="currentColor" />
+          </svg>
+          <span class="dt-label">H-Line</span>
+          <span class="dt-tip">Horizontal Level — 1 click to place</span>
+        </div>
+        <div class="draw-tool" id="dt-tline" data-tool="tline">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <line x1="2" y1="12" x2="12" y2="2" stroke="currentColor" stroke-width="1.5" />
+            <circle cx="2" cy="12" r="1.5" fill="currentColor" />
+            <circle cx="12" cy="2" r="1.5" fill="currentColor" />
+          </svg>
+          <span class="dt-label">Trend</span>
+          <span class="dt-tip">Trend Line — click point 1, then point 2</span>
+        </div>
+        <div class="draw-tool" id="dt-ray" data-tool="ray">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <line x1="2" y1="10" x2="13" y2="4" stroke="currentColor" stroke-width="1.5" />
+            <circle cx="2" cy="10" r="1.5" fill="currentColor" />
+            <polygon points="13,2 13,6 11,4" fill="currentColor" />
+          </svg>
+          <span class="dt-label">Ray</span>
+          <span class="dt-tip">Ray — starts at click, extends right forever</span>
+        </div>
+        <div class="draw-tool" id="dt-fib" data-tool="fib">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <line x1="1" y1="3" x2="13" y2="3" stroke="currentColor" stroke-width="1" />
+            <line x1="1" y1="6" x2="13" y2="6" stroke="currentColor" stroke-width="1" />
+            <line x1="1" y1="9" x2="13" y2="9" stroke="currentColor" stroke-width="1" />
+            <line x1="1" y1="12" x2="13" y2="12" stroke="currentColor" stroke-width="1" />
+          </svg>
+          <span class="dt-label">Fib 🔒</span>
+          <span class="dt-tip">Fibonacci Retracement — Pro feature</span>
+        </div>
+        <div class="draw-tool" id="dt-rect" data-tool="rect">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <rect x="2" y="4" width="10" height="6" stroke="currentColor" stroke-width="1.5" fill="none" />
+          </svg>
+          <span class="dt-label">Rect 🔒</span>
+          <span class="dt-tip">Rectangle — Pro feature</span>
+        </div>
+        <div class="draw-sep"></div>
+        <div class="draw-tool" id="dt-eye" data-tool="eye">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <ellipse cx="7" cy="7" rx="5" ry="3" stroke="currentColor" stroke-width="1.2" />
+            <circle cx="7" cy="7" r="1.5" fill="currentColor" />
+          </svg>
+          <span class="dt-label">Hide</span>
+          <span class="dt-tip">Show / Hide all drawings</span>
+        </div>
+        <div class="draw-tool" id="dt-trash" data-tool="trash">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <rect x="3" y="4" width="8" height="8" rx="1" stroke="currentColor" stroke-width="1.2" />
+            <line x1="1" y1="4" x2="13" y2="4" stroke="currentColor" stroke-width="1.2" />
+            <line x1="5" y1="2" x2="9" y2="2" stroke="currentColor" stroke-width="1.5" />
+            <line x1="5" y1="6.5" x2="5" y2="10" stroke="currentColor" stroke-width="1" />
+            <line x1="9" y1="6.5" x2="9" y2="10" stroke="currentColor" stroke-width="1" />
+          </svg>
+          <span class="dt-label">Clear</span>
+          <span class="dt-tip">Clear all drawings</span>
+        </div>
+      </div>
+
+      <!-- CHART AREA -->
+      <div id="chart-area">
+        <div id="chart-header">
+          <div class="chart-symbol-block">
+            <div class="chart-symbol" id="ch-symbol">RELIANCE</div>
+            <div class="chart-name" id="ch-name">Reliance Industries Ltd. · NSE</div>
+          </div>
+          <div class="chart-price-block">
+            <div class="chart-ltp price-pulse" id="ch-ltp">₹2,891.45</div>
+            <div class="chart-change green" id="ch-change">+₹35.40 &nbsp;(+1.24%)</div>
+          </div>
+          <div class="chart-meta">
+            <div class="meta-item">O <span id="ch-open">2,856.05</span></div>
+            <div class="meta-item">H <span class="green" id="ch-high">2,915.00</span></div>
+            <div class="meta-item">L <span class="red" id="ch-low">2,856.20</span></div>
+            <div class="meta-item">Vol <span id="ch-vol">8.4M</span></div>
+            <div class="meta-item">Avg Vol <span id="ch-avgvol">4.6M</span></div>
+          </div>
+          <div class="chart-header-right">
+            <button class="export-btn" onclick="handleExportClick()">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M6 1v7M3 5l3 3 3-3M1 10h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+              </svg>
+              Export
+              <span class="pro-lock-badge" id="export-lock-badge" style="font-size:10px;margin-left:2px;">🔒</span>
+            </button>
+            <button class="export-btn" id="maximize-btn" onclick="toggleChartMaximize()" title="Maximize chart">
+              <svg id="maximize-icon" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M1 4V1h3M8 1h3v3M11 8v3H8M4 11H1V8" stroke="currentColor" stroke-width="1.4"
+                  stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div id="chart-controls">
+          <div class="tf-tabs" id="tf-tabs">
+            <div class="tf-tab" data-tf="5m">5m</div>
+            <div class="tf-tab" data-tf="15m">15m</div>
+            <div class="tf-tab" data-tf="1H">1H</div>
+            <div class="tf-tab" data-tf="1D">1D</div>
+            <div class="tf-tab" data-tf="1W">1W</div>
+            <div class="tf-tab active" data-tf="1M">1M</div>
+            <div class="tf-tab" data-tf="3M">3M</div>
+            <div class="tf-tab" data-tf="1Y">1Y</div>
+            <div class="tf-tab pro-tab" data-tf="30m" data-pro="1" title="Pro feature">30m<span
+                class="tab-lock">🔒</span></div>
+            <div class="tf-tab pro-tab" data-tf="4H" data-pro="1" title="Pro feature">4H<span class="tab-lock">🔒</span>
+            </div>
+          </div>
+
+          <div class="indicator-chips">
+            <div class="chip active" data-ind="MA20">MA20
+              <span class="chip-tooltip">20-period Simple Moving Average</span>
+            </div>
+            <div class="chip" data-ind="EMA50">EMA50
+              <span class="chip-tooltip">50-period Exponential Moving Average</span>
+            </div>
+            <div class="chip" data-ind="BB">BB
+              <span class="chip-tooltip">Bollinger Bands (20, ±2σ)</span>
+            </div>
+            <div class="chip" data-ind="RSI">RSI
+              <span class="chip-tooltip">Relative Strength Index (14-period)</span>
+            </div>
+            <div class="chip" data-ind="MACD">MACD
+              <span class="chip-tooltip">Moving Average Convergence Divergence (12,26,9)</span>
+            </div>
+            <div class="chip" data-ind="VWAP">VWAP
+              <span class="chip-tooltip">Volume Weighted Average Price (14-period rolling)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tool status bar -->
+        <div id="tool-status">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <circle cx="5" cy="5" r="4" stroke="currentColor" stroke-width="1.5" />
+            <line x1="5" y1="2" x2="5" y2="5" stroke="currentColor" stroke-width="1.5" />
+            <circle cx="5" cy="7" r="0.8" fill="currentColor" />
+          </svg>
+          <span id="tool-status-text">Click on the chart to place</span>
+          <span style="margin-left:auto;color:var(--muted);font-size:10px;cursor:pointer;"
+            onclick="document.getElementById('dt-cursor').click()">ESC to cancel</span>
+        </div>
+
+        <div id="chart-container-wrap" class="cursor-default">
+          <div id="chart-container"></div>
+        </div>
+        <div id="rsi-pane">
+          <div id="rsi-label">RSI(14)</div>
+          <div id="rsi-container"></div>
+        </div>
+        <div id="macd-pane">
+          <div id="macd-label">MACD(12,26,9)</div>
+          <div id="macd-container"></div>
+        </div>
+      </div><!-- /chart-area -->
+
+      <!-- INFO PANEL -->
+      <div id="info-panel">
+        <div class="info-top">
+          <div class="info-symbol" id="ip-symbol">RELIANCE</div>
+          <div class="info-name" id="ip-name">Reliance Industries Ltd.</div>
+          <div class="info-sector" id="ip-sector">Oil &amp; Gas · NSE</div>
+        </div>
+
+        <div class="info-section">
+          <div class="info-row">
+            <span class="label">LTP</span>
+            <span class="val price-pulse" id="ip-ltp">₹2,891.45</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Change</span>
+            <span class="val green" id="ip-change">+₹35.40 (+1.24%)</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Day Range</span>
+            <span class="val" id="ip-range">2,856 — 2,915</span>
+          </div>
+          <div class="info-row">
+            <span class="label">52W Range</span>
+            <span class="val" id="ip-52w">2,188 — 3,217</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Volume</span>
+            <span class="val" id="ip-vol">8.4M <span style="color:var(--green-bright);font-size:10px;">(1.8×
+                avg)</span></span>
+          </div>
+          <div class="info-row">
+            <span class="label">Mkt Cap</span>
+            <span class="val" id="ip-mcap">₹19.6L Cr</span>
+          </div>
+          <div class="info-row">
+            <span class="label">P/E</span>
+            <span class="val" id="ip-pe">22.4×</span>
+          </div>
+          <div class="info-row">
+            <span class="label">EPS</span>
+            <span class="val" id="ip-eps">₹128.90</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Div Yield</span>
+            <span class="val" id="ip-divy">0.44%</span>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <div class="info-section-title">Fundamentals</div>
+          <div class="info-row">
+            <span class="label">Revenue</span>
+            <span class="val">₹9.07L Cr</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Net Profit</span>
+            <span class="val">₹73,670 Cr</span>
+          </div>
+          <div class="info-row">
+            <span class="label">ROE</span>
+            <span class="val">8.8%</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Debt/Eq</span>
+            <span class="val">0.37×</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Promoter%</span>
+            <span class="val">50.3%</span>
+          </div>
+          <div class="info-row">
+            <span class="label">FII%</span>
+            <span class="val">22.4%</span>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <div class="info-section-title">Credit Rating</div>
+          <div class="info-row">
+            <span class="label">CRISIL</span>
+            <span class="val"><span class="badge badge-green">AAA</span></span>
+          </div>
+          <div class="info-row">
+            <span class="label">Outlook</span>
+            <span class="val" style="color:var(--green-bright);font-size:11px;">Stable</span>
+          </div>
+        </div>
+      </div><!-- /info-panel -->
+
+    </div><!-- /main-row -->
+
+    <!-- BOTTOM SECTION -->
+    <div id="bottom-section">
+      <div id="bottom-tabs-bar">
+        <div class="bottom-tab active" data-panel="options">Options Chain</div>
+        <div class="bottom-tab" data-panel="screener">Screener</div>
+        <div class="bottom-tab" data-panel="fiidii">FII / DII Flow</div>
+        <div class="bottom-tab" data-panel="macro">Macro</div>
+        <div class="bottom-tab" data-panel="news">News</div>
+        <div class="bottom-tab" data-panel="alerts">Alerts</div>
+        <div class="bottom-tab" data-panel="portfolio" id="tab-portfolio">
+          Portfolio <span style="font-size:9px;vertical-align:super;" id="portfolio-lock-badge">🔒</span>
+        </div>
+        <div class="tab-underline" id="tab-underline"></div>
+      </div>
+
+      <div id="bottom-content">
+
+        <!-- OPTIONS CHAIN -->
+        <div class="tab-panel active" id="panel-options">
+          <div class="options-header-row">
+            <span style="font-size:11px;color:var(--muted);">RELIANCE · Apr 2026 Expiry · ATM ~₹2,900</span>
+            <div class="max-pain-tag">
+              Max Pain: ₹2,850
+              <span class="mp-tooltip">Strike where maximum options contracts expire worthless. Price gravitates here
+                near expiry.</span>
+            </div>
+            <span style="font-size:11px;color:var(--muted);margin-left:auto;">OI in lots · IV in %</span>
+          </div>
+          <table class="options-table">
+            <thead>
+              <tr>
+                <th style="text-align:right;">CE OI</th>
+                <th style="text-align:right;">CE LTP</th>
+                <th style="text-align:right;">CE IV%</th>
+                <th class="strike-col">STRIKE</th>
+                <th style="text-align:right;">PE LTP</th>
+                <th style="text-align:right;">PE OI</th>
+                <th style="text-align:right;">PE IV%</th>
+              </tr>
+            </thead>
+            <tbody id="options-tbody"></tbody>
+          </table>
+        </div>
+
+        <!-- SCREENER -->
+        <div class="tab-panel" id="panel-screener">
+          <table class="screener-table">
+            <thead>
+              <tr>
+                <th>Symbol <span class="sort-icon">↕</span></th>
+                <th>Sector <span class="sort-icon">↕</span></th>
+                <th>Mkt Cap <span class="sort-icon sorted">↓</span></th>
+                <th>P/E <span class="sort-icon">↕</span></th>
+                <th>ROE% <span class="sort-icon">↕</span></th>
+                <th>52W Chg% <span class="sort-icon">↕</span></th>
+                <th>Volume <span class="sort-icon">↕</span></th>
+              </tr>
+            </thead>
+            <tbody id="screener-tbody"></tbody>
+          </table>
+        </div>
+
+        <!-- FII/DII -->
+        <div class="tab-panel" id="panel-fiidii">
+          <div style="display:flex;gap:16px;height:100%;">
+            <div style="flex:0 0 380px;">
+              <div class="fiidii-grid">
+                <div class="fiidii-card">
+                  <div class="fiidii-card-title">FII · Today</div>
+                  <div class="fiidii-row"><span class="lbl">Bought</span><span class="amt green">+₹3,241 Cr</span></div>
+                  <div class="fiidii-row"><span class="lbl">Sold</span><span class="amt red">−₹4,892 Cr</span></div>
+                  <div class="fiidii-net"><span class="red">Net</span><span class="red" id="live-fii-net">−₹1,651
+                      Cr</span></div>
+                </div>
+                <div class="fiidii-card">
+                  <div class="fiidii-card-title">DII · Today</div>
+                  <div class="fiidii-row"><span class="lbl">Bought</span><span class="amt green">+₹5,123 Cr</span></div>
+                  <div class="fiidii-row"><span class="lbl">Sold</span><span class="amt red">−₹3,456 Cr</span></div>
+                  <div class="fiidii-net"><span class="green">Net</span><span class="green" id="live-dii-net">+₹1,667
+                      Cr</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="flow-bars-section" style="flex:1;min-height:0;">
+              <div class="flow-bars-title">Net FII / DII Flow — Last 5 Sessions (₹ Cr)</div>
+              <canvas id="fii-chart" style="max-height:130px;"></canvas>
+            </div>
+          </div>
+          <div style="margin-top:14px;">
+            <div class="flow-bars-title">Put-Call Ratio (PCR) — Nifty 30-day trend</div>
+            <canvas id="pcr-chart" style="max-height:90px;"></canvas>
+          </div>
+        </div><!-- /panel-fiidii -->
+
+        <!-- MACRO -->
+        <div class="tab-panel" id="panel-macro">
+          <div class="macro-grid">
+            <div class="macro-card">
+              <div class="macro-card-label">RBI Repo Rate</div>
+              <div class="macro-card-val" style="color:var(--gold);" id="macro-repo">6.25%</div>
+              <div class="macro-card-sub">Unchanged · Apr 2026</div>
+            </div>
+            <div class="macro-card">
+              <div class="macro-card-label">India CPI</div>
+              <div class="macro-card-val" style="color:var(--gold);" id="macro-cpi">4.85%</div>
+              <div class="macro-card-sub">Mar 2026 · Above 4% target</div>
+            </div>
+            <div class="macro-card">
+              <div class="macro-card-label">GDP Growth</div>
+              <div class="macro-card-val" style="color:var(--green-bright);" id="macro-gdp">8.2%</div>
+              <div class="macro-card-sub">FY25 Estimate · Strong</div>
+            </div>
+            <div class="macro-card">
+              <div class="macro-card-label">INR / USD</div>
+              <div class="macro-card-val" style="color:var(--text);">₹83.42</div>
+              <div class="macro-card-sub">+0.12% Today</div>
+            </div>
+            <div class="macro-card">
+              <div class="macro-card-label">India VIX</div>
+              <div class="macro-card-val" style="color:var(--green-bright);">14.2</div>
+              <div class="macro-card-sub">Calm · Below 15</div>
+            </div>
+            <div class="macro-card">
+              <div class="macro-card-label">10Y G-Sec Yield</div>
+              <div class="macro-card-val" style="color:var(--text);" id="macro-gsec">6.89%</div>
+              <div class="macro-card-sub">−3 bps Today</div>
+            </div>
+          </div>
+          <div style="margin-top:12px;">
+            <div class="flow-bars-title">10Y G-Sec Yield Trend</div>
+            <canvas id="gsec-chart" style="max-height:90px;"></canvas>
+          </div>
+        </div>
+
+        <!-- NEWS -->
+        <div class="tab-panel" id="panel-news">
+          <div class="news-list" id="news-list"></div>
+        </div>
+
+        <!-- ALERTS -->
+        <div class="tab-panel" id="panel-alerts">
+          <button id="alert-notify-btn" onclick="requestAlertPermission()">Enable browser notifications to receive price
+            alerts</button>
+          <div class="alert-form">
+            <select id="alert-sym-sel"></select>
+            <select id="alert-cond-sel">
+              <option value="above">crosses above</option>
+              <option value="below">crosses below</option>
+            </select>
+            <input type="number" id="alert-price-inp" placeholder="Price ₹" step="0.5" />
+            <button onclick="addAlert()">+ Add Alert</button>
+          </div>
+          <div id="alert-list" class="alert-list">
+            <div style="color:var(--muted);font-size:11px;">No alerts set. Add one above.</div>
+          </div>
+        </div>
+
+        <!-- PORTFOLIO (Pro-gated) -->
+        <div class="tab-panel" id="panel-portfolio">
+          <div class="pro-gate" id="portfolio-gate">
+            <div class="pro-blur-content">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                <span
+                  style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:0.5px;text-transform:uppercase;">Portfolio</span>
+                <button onclick="openAddTrade()"
+                  style="background:var(--accent);color:#fff;border:none;border-radius:4px;padding:4px 10px;font-size:11px;cursor:pointer;font-weight:600;">+
+                  Add Trade</button>
+              </div>
+              <table class="screener-table">
+                <thead>
+                  <tr>
+                    <th>Symbol</th>
+                    <th>Qty</th>
+                    <th>Avg Cost</th>
+                    <th>LTP</th>
+                    <th>P&amp;L</th>
+                    <th>P&amp;L%</th>
+                    <th>Invested</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="font-weight:600;">RELIANCE</td>
+                    <td>10</td>
+                    <td class="mono">₹2,650.00</td>
+                    <td class="mono">₹2,891.45</td>
+                    <td class="mono green">+₹2,414.50</td>
+                    <td class="green">+4.1%</td>
+                    <td>₹26,500</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight:600;">TCS</td>
+                    <td>5</td>
+                    <td class="mono">₹3,820.00</td>
+                    <td class="mono">₹4,012.30</td>
+                    <td class="mono green">+₹961.50</td>
+                    <td class="green">+5.0%</td>
+                    <td>₹19,100</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight:600;">HDFCBANK</td>
+                    <td>15</td>
+                    <td class="mono">₹1,690.00</td>
+                    <td class="mono">₹1,723.85</td>
+                    <td class="mono green">+₹507.75</td>
+                    <td class="green">+2.0%</td>
+                    <td>₹25,350</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight:600;">INFY</td>
+                    <td>8</td>
+                    <td class="mono">₹1,560.00</td>
+                    <td class="mono">₹1,498.20</td>
+                    <td class="mono red">−₹494.40</td>
+                    <td class="red">−4.0%</td>
+                    <td>₹12,480</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight:600;">SBIN</td>
+                    <td>20</td>
+                    <td class="mono">₹780.00</td>
+                    <td class="mono">₹822.55</td>
+                    <td class="mono green">+₹851.00</td>
+                    <td class="green">+5.5%</td>
+                    <td>₹15,600</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="portfolio-summary">
+                <div class="portfolio-summary-item">
+                  <div class="ps-label">Total Invested</div>
+                  <div class="ps-val">₹4,55,000</div>
+                </div>
+                <div class="portfolio-summary-item">
+                  <div class="ps-label">Current Value</div>
+                  <div class="ps-val">₹4,75,370</div>
+                </div>
+                <div class="portfolio-summary-item">
+                  <div class="ps-label">Total P&amp;L</div>
+                  <div class="ps-val green">+₹20,370 (+4.47%)</div>
+                </div>
+                <div class="portfolio-summary-item">
+                  <div class="ps-label">XIRR</div>
+                  <div class="ps-val green">18.2% p.a.</div>
+                </div>
+              </div>
+            </div>
+            <div class="pro-overlay">
+              <div class="pro-lock-icon">🔒</div>
+              <div class="pro-lock-title">Dashboard Pro</div>
+              <div class="pro-lock-sub">₹299/mo — unlock portfolio tracker, alerts &amp; more</div>
+              <button class="pro-upgrade-btn" onclick="openUpgradeModal()">Upgrade →</button>
+            </div>
+          </div>
+        </div><!-- /panel-portfolio -->
+
+      </div><!-- /bottom-content -->
+    </div><!-- /bottom-section -->
+
+    <!-- FOOTER -->
+    <div id="footer">
+      Powered by marketpulse-mcp v0.6.1 by Tanmay Mishra &nbsp;·&nbsp; 58 tools &nbsp;·&nbsp; MIT License &nbsp;·&nbsp;
+      <a href="https://github.com/tanmaymish/marketpulse-mcp" target="_blank">github.com/tanmaymish/marketpulse-mcp</a>
+      &nbsp;·&nbsp; Data is simulated for demo purposes
+    </div>
+
+  </div><!-- /app -->
+
+  <script src="js/dashboard.js"></script>
+</body>
+
+</html>
