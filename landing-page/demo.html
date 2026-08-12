@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketPulse AI Demo — Live Stock Analysis</title>
+    <meta name="description" content="Try MarketPulse MCP's AI-powered stock analysis live. Free LLM-powered financial intelligence by Tanmay Mishra.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #0a0a0f;
+            --surface: #12121a;
+            --card: #1a1a2e;
+            --border: rgba(139,92,246,0.15);
+            --text: #f0f0f5;
+            --muted: #a0a0b8;
+            --dim: #6b6b80;
+            --cyan: #00d4ff;
+            --purple: #8b5cf6;
+            --green: #22c55e;
+            --amber: #f59e0b;
+            --red: #ef4444;
+            --gradient: linear-gradient(135deg, #00d4ff 0%, #8b5cf6 50%, #ec4899 100%);
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; overflow-x: hidden; }
+
+        .bg-grid {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0,212,255,0.06) 0%, transparent 50%),
+                             radial-gradient(ellipse 60% 40% at 80% 80%, rgba(139,92,246,0.04) 0%, transparent 50%);
+            pointer-events: none; z-index: 0;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 0 2rem; position: relative; z-index: 1; }
+
+        nav {
+            position: fixed; top: 0; width: 100%; z-index: 100;
+            background: rgba(10,10,15,0.85); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+        nav .container { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; }
+        .nav-brand { font-weight: 800; font-size: 1.1rem; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-decoration: none; }
+        .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+        .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--cyan); }
+
+        .hero { padding: 8rem 0 3rem; text-align: center; }
+        .hero h1 { font-size: 2.5rem; font-weight: 900; margin-bottom: 1rem; letter-spacing: -0.03em; }
+        .hero h1 .grad { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { color: var(--muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto 2rem; }
+        .badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); border-radius: 100px; padding: 0.4rem 1rem; font-size: 0.8rem; color: var(--green); font-weight: 600; margin-bottom: 1.5rem; }
+        .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: blink 2s infinite; }
+        @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:.3; } }
+
+        .demo-card {
+            background: var(--card); border: 1px solid var(--border); border-radius: 20px;
+            padding: 2.5rem; margin: 2rem 0; position: relative; overflow: hidden;
+        }
+        .demo-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--gradient); }
+
+        .input-row { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
+        .input-row input {
+            flex: 1; padding: 0.85rem 1.2rem; background: var(--surface); border: 1px solid var(--border);
+            border-radius: 12px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.95rem;
+            outline: none; transition: border-color 0.3s;
+        }
+        .input-row input:focus { border-color: var(--cyan); }
+        .input-row input::placeholder { color: var(--dim); }
+
+        .btn-analyze {
+            padding: 0.85rem 2rem; background: var(--gradient); color: #fff; border: none;
+            border-radius: 12px; font-weight: 700; font-size: 0.95rem; cursor: pointer;
+            transition: all 0.3s; white-space: nowrap;
+        }
+        .btn-analyze:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(139,92,246,0.3); }
+        .btn-analyze:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        .quick-picks { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+        .quick-pick {
+            padding: 0.4rem 0.9rem; background: var(--surface); border: 1px solid var(--border);
+            border-radius: 8px; color: var(--muted); font-size: 0.8rem; font-weight: 600; cursor: pointer;
+            transition: all 0.2s; font-family: 'JetBrains Mono', monospace;
+        }
+        .quick-pick:hover { border-color: var(--cyan); color: var(--cyan); }
+
+        .result-area { min-height: 200px; }
+        .result-empty { text-align: center; padding: 3rem 0; color: var(--dim); }
+        .result-empty .icon { font-size: 3rem; margin-bottom: 1rem; opacity: 0.3; }
+
+        .loading { text-align: center; padding: 3rem 0; }
+        .loading .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--cyan); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading p { color: var(--muted); font-size: 0.9rem; }
+
+        .analysis-result { animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .result-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+        .result-symbol { font-size: 1.5rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+        .result-badge { padding: 0.3rem 0.8rem; border-radius: 8px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+        .result-badge.buy { background: rgba(34,197,94,0.15); color: var(--green); }
+        .result-badge.hold { background: rgba(245,158,11,0.15); color: var(--amber); }
+        .result-badge.sell { background: rgba(239,68,68,0.15); color: var(--red); }
+
+        .analysis-text { color: var(--muted); font-size: 0.95rem; line-height: 1.8; white-space: pre-wrap; }
+        .analysis-text strong { color: var(--text); }
+
+        .powered-by { text-align: center; margin-top: 1rem; font-size: 0.75rem; color: var(--dim); }
+        .powered-by span { color: var(--green); }
+
+        .info-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 3rem 0; }
+        .info-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+        .info-card .emoji { font-size: 1.5rem; margin-bottom: 0.75rem; display: block; }
+        .info-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .info-card p { font-size: 0.85rem; color: var(--muted); }
+
+        footer { padding: 3rem 2rem; border-top: 1px solid var(--border); text-align: center; margin-top: 4rem; }
+        .footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 1rem; }
+        .footer-links a { color: var(--muted); text-decoration: none; font-size: 0.85rem; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--cyan); }
+        .footer-copy { color: var(--dim); font-size: 0.75rem; }
+
+        @media (max-width: 640px) {
+            .input-row { flex-direction: column; }
+            .hero h1 { font-size: 1.8rem; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+
+    <nav>
+        <div class="container">
+            <a href="index.html" class="nav-brand">📈 MarketPulse MCP</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="https://github.com/tanmaymish/MarketPulse-MCP" target="_blank">GitHub</a></li>
+                <li><a href="https://www.linkedin.com/in/tanmay-mishra-0308a8207" target="_blank">LinkedIn</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <div class="badge">Live AI Demo — Free LLM Powered</div>
+            <h1>Try <span class="grad">Stock Analysis</span> Live</h1>
+            <p>Enter any stock symbol and get instant AI-powered analysis using free LLM APIs. No API keys, no signup — just real intelligence.</p>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="demo-card">
+            <div class="quick-picks">
+                <span class="quick-pick" onclick="analyze('RELIANCE')">RELIANCE</span>
+                <span class="quick-pick" onclick="analyze('TCS')">TCS</span>
+                <span class="quick-pick" onclick="analyze('HDFCBANK')">HDFCBANK</span>
+                <span class="quick-pick" onclick="analyze('INFY')">INFY</span>
+                <span class="quick-pick" onclick="analyze('AAPL')">AAPL</span>
+                <span class="quick-pick" onclick="analyze('TSLA')">TSLA</span>
+                <span class="quick-pick" onclick="analyze('NVDA')">NVDA</span>
+                <span class="quick-pick" onclick="analyze('BTC-USD')">BTC</span>
+            </div>
+
+            <div class="input-row">
+                <input type="text" id="symbolInput" placeholder="Enter stock symbol (e.g. RELIANCE, AAPL, BTC-USD)" onkeydown="if(event.key==='Enter')analyze()">
+                <button class="btn-analyze" id="analyzeBtn" onclick="analyze()">🧠 Analyze</button>
+            </div>
+
+            <div class="result-area" id="resultArea">
+                <div class="result-empty">
+                    <div class="icon">📊</div>
+                    <p>Enter a stock symbol above to get AI-powered analysis</p>
+                </div>
+            </div>
+
+            <div class="powered-by">Powered by <span>OVHcloud Free LLM API</span> (Qwen3-32B) — zero API keys needed</div>
+        </div>
+
+        <div class="info-cards">
+            <div class="info-card">
+                <span class="emoji">🆓</span>
+                <h3>100% Free</h3>
+                <p>Uses OVHcloud's anonymous free tier — no API keys, no signup, no credit card needed.</p>
+            </div>
+            <div class="info-card">
+                <span class="emoji">🧠</span>
+                <h3>Real AI Analysis</h3>
+                <p>Qwen3-32B model generates genuine financial analysis with risk factors and price drivers.</p>
+            </div>
+            <div class="info-card">
+                <span class="emoji">🔒</span>
+                <h3>Client-Side Only</h3>
+                <p>All API calls happen from your browser. No data touches any backend server.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="https://github.com/tanmaymish" target="_blank">GitHub</a>
+            <a href="https://www.linkedin.com/in/tanmay-mishra-0308a8207" target="_blank">LinkedIn</a>
+            <a href="mailto:tanmaymish78@gmail.com">Email</a>
+        </div>
+        <p class="footer-copy">&copy; 2025 Tanmay Mishra. Built with ❤️ for financial intelligence.</p>
+    </footer>
+
+    <script>
+        const API_URL = 'https://oai.endpoints.kepler.ai.cloud.ovh.net/v1/chat/completions';
+        const MODEL = 'Qwen/Qwen3-32B';
+
+        async function analyze(sym) {
+            const input = document.getElementById('symbolInput');
+            const btn = document.getElementById('analyzeBtn');
+            const area = document.getElementById('resultArea');
+
+            const symbol = (sym || input.value).trim().toUpperCase();
+            if (!symbol) return;
+
+            input.value = symbol;
+            btn.disabled = true;
+            btn.textContent = '⏳ Analyzing...';
+
+            area.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>AI is analyzing ${symbol}...</p>
+                    <p style="font-size:0.75rem;color:var(--dim);margin-top:0.5rem;">Using free Qwen3-32B via OVHcloud (no API key)</p>
+                </div>
+            `;
+
+            const prompt = `You are MarketPulse AI, an expert stock analyst. Analyze the stock "${symbol}" and provide:
+
+1. **Signal**: BUY, HOLD, or SELL (just one word)
+2. **Confidence**: percentage (e.g., 72%)
+3. **Key Drivers**: 3-4 bullet points on what's driving the stock
+4. **Risk Factors**: 2-3 specific risks to watch
+5. **Outlook**: 1-2 sentence forward-looking view
+
+Be specific, cite real-world factors (sector trends, earnings, competition, macro). Keep it concise and actionable. Do not add disclaimers.`;
+
+            try {
+                const resp = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: MODEL,
+                        messages: [
+                            { role: 'system', content: 'You are MarketPulse AI, a concise financial analyst. Give direct, actionable analysis. No markdown headers, use plain text with bullet points (•). No disclaimers.' },
+                            { role: 'user', content: prompt }
+                        ],
+                        max_tokens: 600,
+                        temperature: 0.4
+                    })
+                });
+
+                if (!resp.ok) throw new Error(`API returned ${resp.status}`);
+
+                const data = await resp.json();
+                let text = data.choices[0].message.content.trim();
+
+                // Clean thinking tags if present
+                if (text.includes('</think>')) {
+                    text = text.split('</think>').pop().trim();
+                }
+
+                // Determine signal from text
+                let signal = 'hold';
+                const textLower = text.toLowerCase();
+                if (textLower.includes('signal: buy') || textLower.includes('signal**: buy')) signal = 'buy';
+                else if (textLower.includes('signal: sell') || textLower.includes('signal**: sell')) signal = 'sell';
+                else if (textLower.includes('signal: hold') || textLower.includes('signal**: hold')) signal = 'hold';
+
+                area.innerHTML = `
+                    <div class="analysis-result">
+                        <div class="result-header">
+                            <span class="result-symbol">${symbol}</span>
+                            <span class="result-badge ${signal}">${signal.toUpperCase()}</span>
+                        </div>
+                        <div class="analysis-text">${escapeHtml(text)}</div>
+                    </div>
+                `;
+            } catch (err) {
+                area.innerHTML = `
+                    <div class="analysis-result">
+                        <div class="result-header">
+                            <span class="result-symbol">${symbol}</span>
+                            <span class="result-badge hold">ERROR</span>
+                        </div>
+                        <div class="analysis-text" style="color:var(--red);">
+                            Failed to get AI analysis: ${escapeHtml(err.message)}
+
+The free OVHcloud API has a rate limit of 2 requests per minute. Please wait a moment and try again.
+                        </div>
+                    </div>
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🧠 Analyze';
+            }
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
